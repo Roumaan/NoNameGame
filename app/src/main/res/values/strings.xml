@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">NoNameGame</string>
+    <string-array name="standart_symbols">
+        <item>standart_symbol1</item>
+        <item>standart_symbol2</item>
+        <item>standart_symbol3</item>
+        <item>standart_symbol4</item>
+        <item>standart_symbol5</item>
+    </string-array>
+</resources>
