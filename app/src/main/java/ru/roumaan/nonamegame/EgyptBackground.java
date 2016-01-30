@@ -8,28 +8,59 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 
+import java.util.Random;
+
 public class EgyptBackground implements Background {
+    DisplayMetrics displaymetrics;
     Paint mPaint = new Paint();
     Context context;
     Bitmap goldGradeBitmap;
     Bitmap silverGradeBitmap;
     Bitmap bronzeGradeBitmap;
+    Bitmap defeatBitmap;
     Bitmap bitmap;
+
+    boolean shaking;
+    int grade;
+
 
 
     public EgyptBackground(Context context) {
         this.context = context;
-        bitmap = BitmapFactory.decodeResource(
+        goldGradeBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.standart_background);
+        silverGradeBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.standart_background);
+        bronzeGradeBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.standart_background);
+        defeatBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.standart_background);
 
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        bitmap = Bitmap.createScaledBitmap(bitmap, displaymetrics.widthPixels + 10, displaymetrics.heightPixels + 10, false);
+        displaymetrics = context.getResources().getDisplayMetrics();
+        goldGradeBitmap = Bitmap.createScaledBitmap(goldGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
+        silverGradeBitmap = Bitmap.createScaledBitmap(silverGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
+        bronzeGradeBitmap = Bitmap.createScaledBitmap(bronzeGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
+        defeatBitmap = Bitmap.createScaledBitmap(defeatBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
+
+        bitmap = goldGradeBitmap;
+        grade = 3;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, 0, 0, mPaint);
+        int xSubtrahend = 10;
+        int ySubtrahend = 10;
+
+        if (shaking) {
+            Random random = new Random();
+            xSubtrahend = random.nextInt(20);
+            ySubtrahend = random.nextInt(20);
+        }
+        canvas.drawBitmap(bitmap, displaymetrics.widthPixels-xSubtrahend, displaymetrics.heightPixels-ySubtrahend, mPaint);
     }
 
     @Override
@@ -39,6 +70,19 @@ public class EgyptBackground implements Background {
 
     @Override
     public void gradeDecrease() {
+        grade--;
+        shaking = true;
 
+        switch (grade) {
+            case 2:
+                bitmap = silverGradeBitmap;
+                break;
+            case 1:
+                bitmap = bronzeGradeBitmap;
+                break;
+            case 0:
+                bitmap = defeatBitmap;
+                break;
+        }
     }
 }
