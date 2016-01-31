@@ -6,48 +6,73 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 
+import java.util.List;
 import java.util.Random;
 
 public class EgyptBackground implements Background {
-    DisplayMetrics displaymetrics;
-    Paint mPaint = new Paint();
-    Context context;
-    Bitmap goldGradeBitmap;
-    Bitmap silverGradeBitmap;
-    Bitmap bronzeGradeBitmap;
-    Bitmap defeatBitmap;
-    Bitmap bitmap;
+    private DisplayMetrics displaymetrics;
+    private Paint mPaint = new Paint();
+    private Context context;
+    private Bitmap silverGradeBitmap;
+    private Bitmap bronzeGradeBitmap;
+    private Bitmap defeatBitmap;
+    private Bitmap bitmap;
+    private Sprite background;
 
-    boolean shaking;
-    int grade;
+    private boolean shaking;
+    private int grade;
 
 
 
     public EgyptBackground(Context context) {
         this.context = context;
-        goldGradeBitmap = BitmapFactory.decodeResource(
+        Bitmap goldGradeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_background);
+                R.drawable.egypt_gold_background);
+        /*
         silverGradeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_background);
+                R.drawable.egypt_gold_background);
         bronzeGradeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_background);
+                R.drawable.egypt_gold_background);
         defeatBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_background);
+                R.drawable.egypt_gold_background);
+        */
 
         displaymetrics = context.getResources().getDisplayMetrics();
-        goldGradeBitmap = Bitmap.createScaledBitmap(goldGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
-        silverGradeBitmap = Bitmap.createScaledBitmap(silverGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
-        bronzeGradeBitmap = Bitmap.createScaledBitmap(bronzeGradeBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
-        defeatBitmap = Bitmap.createScaledBitmap(defeatBitmap, displaymetrics.widthPixels + 20, displaymetrics.heightPixels + 20, false);
+        goldGradeBitmap = Bitmap.createScaledBitmap(goldGradeBitmap, (displaymetrics.widthPixels + 20) * 5, (displaymetrics.heightPixels + 20) * 3, false);
+        //silverGradeBitmap = Bitmap.createScaledBitmap(goldGradeBitmap/*silverGradeBitmap*/, (displaymetrics.widthPixels + 20) * 5, (displaymetrics.heightPixels + 20) * 3, false);
+        //bronzeGradeBitmap = Bitmap.createScaledBitmap(goldGradeBitmap/*bronzeGradeBitmap*/, (displaymetrics.widthPixels + 20) * 5, (displaymetrics.heightPixels + 20) * 3, false);
+        //defeatBitmap = Bitmap.createScaledBitmap(goldGradeBitmap/*defeatBitmap*/, (displaymetrics.widthPixels + 20) * 5, displaymetrics.heightPixels + 20, false);
 
         bitmap = goldGradeBitmap;
         grade = 3;
+
+
+        int w = bitmap.getWidth()/5;
+        int h = bitmap.getHeight()/3;
+
+        Rect firstFrame = new Rect(0, 0, w, h);
+
+        background = new Sprite(0, 0, firstFrame, bitmap);
+
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 4; j++) {
+
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+
+
+                background.addFrame(new Rect(j * w, i * h, j * w + w, i * h + h));
+
+            }
+        }
     }
 
     @Override
@@ -60,12 +85,15 @@ public class EgyptBackground implements Background {
             xSubtrahend = random.nextInt(20);
             ySubtrahend = random.nextInt(20);
         }
-        canvas.drawBitmap(bitmap, displaymetrics.widthPixels-xSubtrahend, displaymetrics.heightPixels-ySubtrahend, mPaint);
+
+        background.setXY(-xSubtrahend, -ySubtrahend);
+        background.draw(canvas);
+
     }
 
     @Override
     public void update(int ms) {
-
+        background.update(ms);
     }
 
     @Override
@@ -84,5 +112,9 @@ public class EgyptBackground implements Background {
                 bitmap = defeatBitmap;
                 break;
         }
+
+        background.setBitmap(bitmap);
     }
+
+
 }

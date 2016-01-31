@@ -8,7 +8,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GamePlayer egypt = new GamePlayer(this,new StandartBackground(this), new StandartButtons(this), new StandartBoard(this), 50000);
+        GamePlayer egypt = new GamePlayer(this,new EgyptBackground(this), new StandartButtons(this), new StandartBoard(this), 50000);
         setContentView(egypt);
     }
 }
