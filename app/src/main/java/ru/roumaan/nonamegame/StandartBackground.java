@@ -36,4 +36,6 @@ public class StandartBackground implements Background {
     public void gradeDecrease() {
 
     }
+
+
 }

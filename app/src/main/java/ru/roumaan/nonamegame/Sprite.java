@@ -12,8 +12,6 @@ import java.util.List;
 public class Sprite {
     private Bitmap bitmap;
     private List<Rect> frames;
-    private int frameWidth;
-    private int frameHeight;
     private int currentFrame;
     private double frameTime;
     private double timeForCurrentFrame;
@@ -21,11 +19,17 @@ public class Sprite {
     private double x;
     private double y;
 
-    public Sprite(double x, double y,
+    private double destinationWidth;
+    private double destinationHeigth;
+
+    public Sprite(double x, double y, double destinationWidth, double destinationHeigth,
                   Rect initialFrame, Bitmap bitmap) {
 
         this.x = x;
         this.y = y;
+
+        this.destinationWidth = destinationWidth;
+        this.destinationHeigth = destinationHeigth;
 
         this.bitmap = bitmap;
         this.frames = new ArrayList<>();
@@ -34,8 +38,6 @@ public class Sprite {
         this.timeForCurrentFrame = 0.0;
         this.frameTime = 100;
         this.currentFrame = 0;
-        this.frameWidth = initialFrame.width();
-        this.frameHeight = initialFrame.height();
     }
 
     public void update (int ms) {
@@ -55,10 +57,11 @@ public class Sprite {
 
         Paint p = new Paint();
 
-        Rect destination = new Rect((int)x, (int)y, (int)(x + frameWidth),
-                (int)(y + frameHeight));
+        Rect destination = new Rect((int)x, (int)y, (int)(x + destinationWidth),
+                (int)(y + destinationHeigth));
 
         canvas.drawBitmap(bitmap, frames.get(currentFrame), destination, p);
+
 
     }
 

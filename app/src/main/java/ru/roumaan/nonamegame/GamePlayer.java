@@ -60,11 +60,15 @@ public class GamePlayer extends View {
 
 
     private void update(int ms) {
-        /*
-        if ((remainingTime < ??? && grade == 3) || (remainingTime < ??? && grade == 2)) {
+
+        if ((remainingTime < startTime*0.75 && grade == 3) || (remainingTime < startTime*0.30 && grade == 2) || remainingTime <= 0) {
             gradeDecrease();
         }
-        */
+
+        if (grade==0) {
+            gameOver();
+        }
+
         remainingTime -= ms;
         background.update(ms);
         buttons.update(ms);
@@ -101,9 +105,6 @@ public class GamePlayer extends View {
                 gameOver();
             }
 
-            if (remainingTime <= 0) {
-                gameOver();
-            }
         }
         return true;
     }
