@@ -30,21 +30,21 @@ public class GameTimer {
                 R.drawable.remaining_time);
 
 
-        remainingTimeBitmap = Bitmap.createScaledBitmap(remainingTimeBitmap, (int) (displaymetrics.widthPixels * 0.7), (int) (displaymetrics.heightPixels * 0.04), false);
+        remainingTimeBitmap = Bitmap.createScaledBitmap(remainingTimeBitmap, (int) (displaymetrics.widthPixels * 0.786), (int) (displaymetrics.heightPixels * 0.047), false);
 
         endingTimeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.ending_time);
 
-        endingTimeBitmap = Bitmap.createScaledBitmap(endingTimeBitmap, (int) (displaymetrics.widthPixels * 0.77), (int) (displaymetrics.heightPixels * 0.04), false);
+        endingTimeBitmap = Bitmap.createScaledBitmap(endingTimeBitmap, (int) (displaymetrics.widthPixels * 0.786), (int) (displaymetrics.heightPixels * 0.047), false);
 
-        oneHundredPercentPoz = (int) (displaymetrics.widthPixels * 0.84);
-        zeroPercentPoz = (int) (displaymetrics.widthPixels * 0.14);
+        oneHundredPercentPoz = (int) (displaymetrics.widthPixels * 0.893);
+        zeroPercentPoz = (int) (displaymetrics.widthPixels * 0.122);
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(remainingTimeBitmap, (int)(displaymetrics.widthPixels * 0.14), (int) (displaymetrics.heightPixels*0.045), mPaint);
-        canvas.drawBitmap(endingTimeBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (displaymetrics.heightPixels*0.045), mPaint);
+        canvas.drawBitmap(remainingTimeBitmap, (int)(displaymetrics.widthPixels * 0.122), (int) (displaymetrics.heightPixels*0.039), mPaint);
+        canvas.drawBitmap(endingTimeBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (displaymetrics.heightPixels*0.039), mPaint);
     }
 
     public void update(int remainingTime) {
