@@ -17,34 +17,37 @@ public class GameTimer {
     int remainingTime;
     int startTime;
 
-    DisplayMetrics displaymetrics;
+    int width;
+    int height;
 
-    public GameTimer(Context context, int startTime) {
+    public GameTimer(Context context, int startTime, int width, int height) {
         this.startTime = startTime;
+        this.width = width;
+        this.height = height;
+
         remainingTime = this.startTime;
         remainingPercent = 100;
-        displaymetrics = context.getResources().getDisplayMetrics();
 
         remainingTimeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.remaining_time);
 
 
-        remainingTimeBitmap = Bitmap.createScaledBitmap(remainingTimeBitmap, (int) (displaymetrics.widthPixels * 0.786), (int) (displaymetrics.heightPixels * 0.047), false);
+        remainingTimeBitmap = Bitmap.createScaledBitmap(remainingTimeBitmap, (int) (width * 0.786), (int) (height * 0.047), false);
 
         endingTimeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.ending_time);
 
-        endingTimeBitmap = Bitmap.createScaledBitmap(endingTimeBitmap, (int) (displaymetrics.widthPixels * 0.786), (int) (displaymetrics.heightPixels * 0.047), false);
+        endingTimeBitmap = Bitmap.createScaledBitmap(endingTimeBitmap, (int) (width * 0.786), (int) (height * 0.047), false);
 
-        oneHundredPercentPoz = (int) (displaymetrics.widthPixels * 0.893);
-        zeroPercentPoz = (int) (displaymetrics.widthPixels * 0.122);
+        oneHundredPercentPoz = (int) (width * 0.893);
+        zeroPercentPoz = (int) (width * 0.122);
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(remainingTimeBitmap, (int)(displaymetrics.widthPixels * 0.122), (int) (displaymetrics.heightPixels*0.039), mPaint);
-        canvas.drawBitmap(endingTimeBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (displaymetrics.heightPixels*0.039), mPaint);
+        canvas.drawBitmap(remainingTimeBitmap, (int)(width * 0.122), (int) (height*0.039), mPaint);
+        canvas.drawBitmap(endingTimeBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (height*0.039), mPaint);
     }
 
     public void update(int remainingTime) {

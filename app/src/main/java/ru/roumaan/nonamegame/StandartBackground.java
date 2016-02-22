@@ -3,37 +3,25 @@ package ru.roumaan.nonamegame;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.util.DisplayMetrics;
 
 
 
-public class StandartBackground implements Background {
-    Paint mPaint = new  Paint();
-    Context context;
-    Bitmap bitmap;
-    public StandartBackground(Context context) {
+public class StandartBackground extends Background {
+
+    public StandartBackground(Context context, int width, int height) {
+
         this.context = context;
+
+        w = width;
+        h = height;
+
         bitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.standart_background);
+        bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
 
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        bitmap = Bitmap.createScaledBitmap(bitmap, displaymetrics.widthPixels, displaymetrics.heightPixels, false);
-    }
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, 0, 0, mPaint);
-    }
-
-    @Override
-    public void update(int ms) {
+        createSprite();
 
     }
 
-    @Override
-    public void gradeDecrease() {
-
-    }
 }

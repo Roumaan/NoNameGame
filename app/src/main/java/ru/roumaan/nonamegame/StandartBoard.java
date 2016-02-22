@@ -3,64 +3,58 @@ package ru.roumaan.nonamegame;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
-import java.util.Random;
-
-public class StandartBoard implements Board {
-    Paint mPaint = new  Paint();
-    Context context;
-    Bitmap[] symbols_bitmaps = new Bitmap[5];
-    Bitmap board_bitmap;
-    Bitmap symbol_bitmap;
+public class StandartBoard extends Board {
 
     DisplayMetrics displaymetrics;
 
-    public StandartBoard (Context context) {
+    public StandartBoard (Context context, int width, int height) {
+
         this.context = context;
 
-        board_bitmap = BitmapFactory.decodeResource(
+        displaymetrics = context.getResources().getDisplayMetrics();
+
+        boardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
                 R.drawable.standart_board);
 
-        displaymetrics = context.getResources().getDisplayMetrics();
-        board_bitmap = Bitmap.createScaledBitmap(board_bitmap, (int) (displaymetrics.widthPixels*0.5), (int) (displaymetrics.heightPixels*0.35), false);
+
+
+        boardW = (int) (width*0.4);
+        boardH = (int) (boardW*1.5);
+
+        boardX = (width - boardW)/2;
+        boardY = (height - boardH)*0.4;
+
+        boardBitmap = Bitmap.createScaledBitmap(boardBitmap, boardW, boardH, false);
+
+        symbolW = (int) (boardW/1.5);
+        symbolH = symbolW;
+
+        symbolX = boardX+(boardW-symbolW)/2;
+        symbolY = boardY+(boardH-symbolH)/2;
+
+
+
+        symbolsBitmaps = new Bitmap[10];
         int j = 0;
         for (String i:
-        context.getResources().getStringArray(R.array.standart_symbols)) {
-            int resID = context.getResources().getIdentifier(i , "drawable", context.getPackageName());
-            Bitmap symbol_bitmap = BitmapFactory.decodeResource(
+                context.getResources().getStringArray(R.array.standart_symbols)) {
+            int resID = context.getResources().getIdentifier(i, "drawable", context.getPackageName());
+            Bitmap symbolBitmap = BitmapFactory.decodeResource(
                     context.getResources(),
                     resID);
-            symbol_bitmap = Bitmap.createScaledBitmap(symbol_bitmap, (int) (displaymetrics.widthPixels*0.5*0.5), (int) (displaymetrics.heightPixels*0.35*0.35), false);
-            symbols_bitmaps[j] = symbol_bitmap;
+            Log.i("button", Integer.toString(resID));
+            Log.i("button", context.getPackageName());
+            Log.i("button", i);
+            symbolBitmap = Bitmap.createScaledBitmap(symbolBitmap, symbolW, symbolH, false);
+            symbolsBitmaps[j] = symbolBitmap;
             j++;
         }
+
+        create();
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(board_bitmap, (int)(displaymetrics.widthPixels * 0.25), (int) (displaymetrics.heightPixels*0.28), mPaint);
-        canvas.drawBitmap(symbol_bitmap, (int)(displaymetrics.widthPixels * 0.25 + displaymetrics.widthPixels*0.5*0.25), (int) (displaymetrics.heightPixels*0.33 + displaymetrics.heightPixels*0.35*0.175), mPaint);
-    }
-
-    @Override
-    public void update(int ms) {
-
-    }
-
-    @Override
-    public void gradeDecrease() {
-
-    }
-
-    @Override
-    public int next() {
-        Random random = new Random();
-        int i = random.nextInt(5);
-        symbol_bitmap = symbols_bitmaps[i];
-        return i;
-    }
 }

@@ -5,40 +5,36 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 
-public class GamePlayer extends View {
+public class StandartCampaignPlayer extends View {
 
-    Background background;
-    Buttons buttons;
-    Board board;
+    StandartBackground background;
+    StandartButtons buttons;
+    StandartBoard board;
     GameTimer timer; // Полоска времени
-    Context context; // Context нужен для получения размера экрана на 56
+    Context context; // Context нужен для получения размера экрана на 58
 
 
     int startTime; // Стартовое время
     int remainingTime; // Оставшееся время
     int score; // Колличество очков
-    int grade = 3; // Оценка 3 - золота и т.д.
+
 
 
     // Конструктор
-    public GamePlayer(Context context , Background background, Buttons buttons, Board board, int remainingTime ) {
+    public StandartCampaignPlayer(Context context, int remainingTime) {
         super(context);
 
         this.context = context;
-        this.background = background;
-        this.buttons = buttons;
-        this.board = board;
+
         this.remainingTime = remainingTime;
-        buttons.next(board.next()); // Следующий символ
-        timer = new GameTimer(context, remainingTime);
         startTime = remainingTime;
 
-
-        Timer t = new Timer(); // Таймер (143) в отдельном потоке для запуска метода update()
+        Timer t = new Timer(); // Таймер (116) в отдельном потоке для запуска метода update()
         t.start();
 
     }
@@ -66,17 +62,10 @@ public class GamePlayer extends View {
     // Обновление
     private void update(int ms) {
 
-        // Снижение оценки по времени
-        if ((remainingTime < startTime * 0.50 && grade == 3) || (remainingTime < startTime * 0.25 && grade == 2) || (remainingTime <=0)) {
-            gradeDecrease();
-        }
-
-        // Проигрыш по времени
-        if (grade == 0) {
+        Log.i("abc", "2");
+        if (remainingTime <= 0) {
             gameOver();
         }
-
-
         remainingTime -= ms; // Уменьшение оставшегося времени
 
         // Обновление всех эллементов
@@ -85,21 +74,10 @@ public class GamePlayer extends View {
         board.update(ms);
         timer.update(remainingTime);
 
+        Log.i("abc", "3");
         // Перерисовка
         invalidate();
-    }
-
-    // Снижение оценки
-    private void gradeDecrease() {
-
-        grade--;
-
-        // Снижение оценки у всех эллементов
-        background.gradeDecrease();
-        buttons.gradeDecrease();
-        board.gradeDecrease();
-        timer.gradeDecrease();
-
+        Log.i("abc", "4");
     }
 
     // Этот метод вызывается при касании экрана
@@ -121,8 +99,6 @@ public class GamePlayer extends View {
                 score++;// Увеличить колличество очков
 
             } /* А в противном случае */ else {
-
-
                 gameOver();// Проигрыш
             }
 
@@ -133,24 +109,38 @@ public class GamePlayer extends View {
 
     // Проигрыш
     private void gameOver() {
-
-
         remainingTime = startTime;// Возвращение полоски времени к начальному состоянию
         score = 0;
     }
 
     // Таймер
     class Timer extends CountDownTimer {
-
+        boolean firstUpdate;
         public Timer() {
-
             super(Integer.MAX_VALUE, 50); // Каждые 50мс вызывать onTick
-
+            firstUpdate = true;
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
-            update(50); // Обновление
+            if(getWidth() != 0 && getHeight() != 0) {
+
+                if (firstUpdate) {
+                    timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
+                    background = new StandartBackground(context, getWidth(), getHeight());
+                    buttons = new StandartButtons(context, getWidth(), getHeight());
+                    board = new StandartBoard(context, getWidth(), getHeight());
+                    Log.i("abc", "1");
+                    buttons.next(board.next()); // Следующий символ
+                    Log.i("abc", "9");
+                    firstUpdate = false;
+                }
+
+
+                update(50); // Обновление
+
+            }
+
         }
 
         @Override
@@ -158,5 +148,6 @@ public class GamePlayer extends View {
 
         }
     }
+
 }
 
