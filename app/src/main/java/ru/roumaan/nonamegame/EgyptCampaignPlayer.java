@@ -136,7 +136,7 @@ public class EgyptCampaignPlayer extends View {
 
     private void gradeDecrease () {
         grade--;
-        
+
         /*
         timer.setGrade(grade);
         */
