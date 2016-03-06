@@ -16,7 +16,7 @@ abstract public class Background {
     protected int w;
     protected int h;
 
-    protected void createSprite() {
+    protected void prepare() {
         Rect initialFrame = new Rect(0, 0, w, h);
         sprite = new Sprite(x, y, 0, 0, initialFrame, bitmap);
     }

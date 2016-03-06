@@ -54,7 +54,7 @@ public class StandartBoard extends Board {
             j++;
         }
 
-        create();
+        prepare();
     }
 
 }
