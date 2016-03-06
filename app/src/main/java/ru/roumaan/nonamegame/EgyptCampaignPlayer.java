@@ -91,7 +91,7 @@ public class EgyptCampaignPlayer extends View {
 
         speed*= speedMultiplier;
 
-        if (!board.isBeyond()) {
+        if (board.isBeyond()) {
             gameOver();
         }
 
@@ -124,6 +124,10 @@ public class EgyptCampaignPlayer extends View {
                 buttons.next(id);
 
                 score++;// Увеличить колличество очков
+
+                if (score>=symbols) {
+                    victory();
+                }
 
             } /* А в противном случае */ else {
                 gameOver();// Проигрыш
@@ -160,6 +164,7 @@ public class EgyptCampaignPlayer extends View {
     // Таймер
     class Timer extends CountDownTimer {
         boolean firstUpdate;
+
         public Timer() {
             super(Integer.MAX_VALUE, 50); // Каждые 50мс вызывать onTick
             firstUpdate = true;
