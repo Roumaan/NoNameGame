@@ -8,7 +8,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StandartCampaignPlayer egypt = new StandartCampaignPlayer(this, 50000);
+        StandardCampaignPlayer egypt = new StandardCampaignPlayer(this, 50000);
         setContentView(egypt);
     }
 }
