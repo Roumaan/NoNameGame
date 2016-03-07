@@ -47,7 +47,7 @@ public class StandardButtons extends   Buttons {
             symbolsBitmaps[i] = symbolBitmap;
         }
 
-        create();
+        prepare();
     }
 
 

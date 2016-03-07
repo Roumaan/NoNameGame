@@ -29,7 +29,7 @@ abstract public class Board {
     protected int symbolW;
     protected int symbolH;
 
-    void create() {
+    void prepare() {
         Rect boardInitialFrame = new Rect(0, 0, boardW, boardH);
         Rect symbolInitialFrame = new Rect(0, 0, symbolW, symbolH);
         board = new Sprite(boardX, boardY, vX, vY, boardInitialFrame, boardBitmap );

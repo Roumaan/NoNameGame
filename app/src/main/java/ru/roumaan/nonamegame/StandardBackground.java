@@ -20,7 +20,7 @@ public class StandardBackground extends Background {
                 R.drawable.standart_background);
         bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
 
-        createSprite();
+        prepare();
 
     }
 

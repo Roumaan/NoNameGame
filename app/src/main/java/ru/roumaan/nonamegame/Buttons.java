@@ -42,7 +42,7 @@ abstract public class Buttons {
     protected int button4VY;
 
 
-    void create() {
+    void prepare() {
         button1 = new Button(buttonsBitmap, symbolsBitmaps, button1X, button1Y, button1VX, button1VY);
         button2 = new Button(buttonsBitmap, symbolsBitmaps, button2X, button2Y, button2VX, button2VY);
         button3 = new Button(buttonsBitmap, symbolsBitmaps, button3X, button3Y, button3VX, button3VY);
