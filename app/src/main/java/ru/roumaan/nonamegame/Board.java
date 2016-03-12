@@ -11,8 +11,8 @@ abstract public class Board {
     protected Context context;
     protected Bitmap[] symbolsBitmaps;
     protected Bitmap boardBitmap;
-    private Sprite board;
-    private Sprite symbol;
+    protected Sprite board;
+    protected Sprite symbol;
 
     protected double symbolX;
     protected double symbolY;
@@ -28,6 +28,8 @@ abstract public class Board {
 
     protected int symbolW;
     protected int symbolH;
+
+    protected int symbolId;
 
     void prepare() {
         Rect boardInitialFrame = new Rect(0, 0, boardW, boardH);
@@ -55,10 +57,11 @@ abstract public class Board {
 
     int next() {
         Random random = new Random();
-        int i = random.nextInt(symbolsBitmaps.length);
-        symbol.setBitmap(symbolsBitmaps[i]);
 
-        return i;
+        symbolId = random.nextInt(symbolsBitmaps.length);
+        symbol.setBitmap(symbolsBitmaps[symbolId]);
+
+        return symbolId;
     }
 
 }

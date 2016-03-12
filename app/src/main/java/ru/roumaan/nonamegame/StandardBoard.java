@@ -39,6 +39,7 @@ public class StandardBoard extends Board {
 
 
         symbolsBitmaps = new Bitmap[10];
+
         int j = 0;
         for (String i:
                 context.getResources().getStringArray(R.array.standart_symbols)) {
@@ -46,9 +47,7 @@ public class StandardBoard extends Board {
             Bitmap symbolBitmap = BitmapFactory.decodeResource(
                     context.getResources(),
                     resID);
-            Log.i("button", Integer.toString(resID));
-            Log.i("button", context.getPackageName());
-            Log.i("button", i);
+
             symbolBitmap = Bitmap.createScaledBitmap(symbolBitmap, symbolW, symbolH, false);
             symbolsBitmaps[j] = symbolBitmap;
             j++;
