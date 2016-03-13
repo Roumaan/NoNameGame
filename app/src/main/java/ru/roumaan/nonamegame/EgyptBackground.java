@@ -33,6 +33,8 @@ public class EgyptBackground extends Background {
                 context.getResources(),
                 R.drawable.standart_background);
         BronzeGradeBitmap = Bitmap.createScaledBitmap(BronzeGradeBitmap, w, h, false);
+
+        bitmap = GoldGradeBitmap;
     }
 
     public void setGrade(int grade) {
