@@ -217,6 +217,6 @@ public class EgyptBoard extends Board {
     }
 
     public boolean isBeyond() {
-        return false;
+        return symbol.getY() <= -symbolH / 2;
     }
 }
