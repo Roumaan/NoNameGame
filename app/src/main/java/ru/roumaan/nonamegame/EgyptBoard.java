@@ -81,6 +81,18 @@ public class EgyptBoard extends Board {
 
         boardBitmap = GoldGradeBoardBitmap;
 
+        int j = 0;
+        for (String i:
+                context.getResources().getStringArray(R.array.standart_symbols)) {
+            resID = context.getResources().getIdentifier(i, "drawable", context.getPackageName());
+            Bitmap symbolBitmap = BitmapFactory.decodeResource(
+                    context.getResources(),
+                    resID);
+
+            symbolBitmap = Bitmap.createScaledBitmap(symbolBitmap, symbolW, symbolH, false);
+            symbolsBitmaps[j] = symbolBitmap;
+            j++;
+        }
 
         prepare();
 
@@ -94,6 +106,7 @@ public class EgyptBoard extends Board {
         secondSymbol = symbol;
         thirdSymbol = symbol;
         fourthSymbol = symbol;
+
 
         Random random = new Random();
 
