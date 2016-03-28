@@ -17,7 +17,7 @@ public class EgyptCampaignPlayer extends View {
     private GameTimer timer; // Полоска времени
     private Context context; // Context нужен для получения размера экрана на 58
 
-    Sprite foreground;
+    //Sprite foreground;
 
     private int startTime; // Стартовое время
     private int remainingTime; // Оставшееся время
@@ -64,8 +64,9 @@ public class EgyptCampaignPlayer extends View {
         // Отрисовка кнопок, полоски времени, фона, доски
         timer.draw(canvas);
         background.draw(canvas);
-        buttons.draw(canvas);
         board.draw(canvas);
+        buttons.draw(canvas);
+
 
         //foreground.draw(canvas);
 
@@ -163,10 +164,10 @@ public class EgyptCampaignPlayer extends View {
 
     // Таймер
     class Timer extends CountDownTimer {
-        boolean firstUpdate;
+        boolean firstUpdate = true;
 
         public Timer() {
-            super(Integer.MAX_VALUE, 50); // Каждые 50мс вызывать onTick
+            super(Integer.MAX_VALUE, 50); // Каждые 100мс вызывать onTick
             firstUpdate = true;
         }
 
