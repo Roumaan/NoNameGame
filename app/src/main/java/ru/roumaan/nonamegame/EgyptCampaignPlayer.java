@@ -67,7 +67,7 @@ public class EgyptCampaignPlayer extends View {
         buttons.draw(canvas);
         board.draw(canvas);
 
-        foreground.draw(canvas);
+        //foreground.draw(canvas);
 
 
         Paint mPaint = new Paint(); // Кисть с настройкой размера текста на 30 для отрисовки колличества очков на 59 строчке
