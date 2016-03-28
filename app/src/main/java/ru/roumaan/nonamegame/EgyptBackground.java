@@ -13,15 +13,15 @@ public class EgyptBackground extends Background {
     Bitmap BronzeGradeBitmap;
 
     public EgyptBackground(Context context, int width, int height) {
-        x = -10;
-        y = -10;
+        x = 0;
+        y = 0;
 
         w = width + 20;
         h = height + 20;
 
         GoldGradeBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_background);
+                R.drawable.egypt_background);
         GoldGradeBitmap = Bitmap.createScaledBitmap(GoldGradeBitmap, w, h, false);
 
         SilverGradeBitmap = BitmapFactory.decodeResource(
@@ -35,6 +35,8 @@ public class EgyptBackground extends Background {
         BronzeGradeBitmap = Bitmap.createScaledBitmap(BronzeGradeBitmap, w, h, false);
 
         bitmap = GoldGradeBitmap;
+
+        prepare();
     }
 
     public void setGrade(int grade) {
@@ -50,6 +52,7 @@ public class EgyptBackground extends Background {
                 break;
         }
         sprite.setBitmap(bitmap);
+
     }
 
     @Override
@@ -58,12 +61,10 @@ public class EgyptBackground extends Background {
 
         Random random = new Random();
 
-        int i = random.nextInt(10);
-        x-=i;
-        sprite.setX(x);
+        int i = random.nextInt(20);
+        sprite.setX(x-i);
 
-        int j = random.nextInt(10);
-        y-=j;
-        sprite.setY(y);
+        int j = random.nextInt(20);
+        sprite.setY(y-j);
     }
 }
