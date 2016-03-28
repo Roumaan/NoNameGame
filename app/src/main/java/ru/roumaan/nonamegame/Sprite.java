@@ -68,8 +68,8 @@ public class Sprite {
             timeForCurrentFrame = timeForCurrentFrame - frameTime;
         }
 
-        x = x + velocityX * ms/1000.0;
-        y = y + velocityY * ms/1000.0;
+        x = x + velocityX * (ms/1000.0);
+        y = y + velocityY * (ms/1000.0);
 
     }
 
