@@ -5,12 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 
-public class StandardCampaignPlayer extends View {
+public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder.Callback  {
 
     private StandardBackground background;
     private StandardButtons buttons;
@@ -23,46 +23,28 @@ public class StandardCampaignPlayer extends View {
     private int remainingTime; // Оставшееся время
     private int score; // Колличество очков
 
+    private DrawThread drawThread;
 
+    boolean firstUpdate;
 
     // Конструктор
     public StandardCampaignPlayer(Context context, int remainingTime) {
         super(context);
+
+        firstUpdate = true;
 
         this.context = context;
 
         this.remainingTime = remainingTime;
         startTime = remainingTime;
 
-        Timer t = new Timer(); // Таймер (116) в отдельном потоке для запуска метода update()
-        t.start();
-
+        getHolder().addCallback(this);
     }
 
-    // Отрисовка
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        // Отрисовка кнопок, полоски времени, фона, доски
-        timer.draw(canvas);
-        background.draw(canvas);
-        buttons.draw(canvas);
-        board.draw(canvas);
-
-        Paint mPaint = new Paint(); // Кисть с настройкой размера текста на 30 для отрисовки колличества очков на 59 строчке
-        mPaint.setTextSize(30);
-
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics(); // Размер экрана
-        canvas.drawText(Integer.toString(score), (float) (displaymetrics.widthPixels * 0.05), (float) (displaymetrics.heightPixels * 0.1), mPaint);
-
-
-    }
 
     // Обновление
     private void update(int ms) {
 
-        Log.i("abc", "2");
         if (remainingTime <= 0) {
             gameOver();
         }
@@ -74,10 +56,6 @@ public class StandardCampaignPlayer extends View {
         board.update(ms);
         timer.update(remainingTime);
 
-        Log.i("abc", "3");
-        // Перерисовка
-        invalidate();
-        Log.i("abc", "4");
     }
 
     // Этот метод вызывается при касании экрана
@@ -113,29 +91,97 @@ public class StandardCampaignPlayer extends View {
         score = 0;
     }
 
-    // Таймер
-    class Timer extends CountDownTimer {
-        boolean firstUpdate;
-        public Timer() {
-            super(Integer.MAX_VALUE, 50); // Каждые 50мс вызывать onTick
-            firstUpdate = true;
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        drawThread = new DrawThread(getHolder());
+        drawThread.start();
+
+        Timer t = new Timer();
+        t.start();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        drawThread.requestStop();
+        boolean retry = true;
+        while (retry) {
+            try {
+                drawThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                //
+            }
+        }
+
+    }
+
+
+    public class DrawThread extends Thread {
+        private SurfaceHolder surfaceHolder;
+        private volatile boolean running = true;//флаг для остановки потока
+
+        public DrawThread(SurfaceHolder surfaceHolder) {
+            this.surfaceHolder = surfaceHolder;
+        }
+
+        public void requestStop() {
+            running = false;
         }
 
         @Override
-        public void onTick(long millisUntilFinished) {
-            if(getWidth() != 0 && getHeight() != 0) {
-
+        public void run() {
+            while (running) {
                 if (firstUpdate) {
                     timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
                     background = new StandardBackground(context, getWidth(), getHeight());
                     buttons = new StandardButtons(context, getWidth(), getHeight());
                     board = new StandardBoard(context, getWidth(), getHeight());
-                    Log.i("abc", "1");
+
                     buttons.next(board.next()); // Следующий символ
-                    Log.i("abc", "9");
                     firstUpdate = false;
                 }
 
+                Canvas canvas = surfaceHolder.lockCanvas();
+                if (canvas != null && !firstUpdate) {
+                    try {
+
+                        timer.draw(canvas);
+                        background.draw(canvas);
+                        buttons.draw(canvas);
+                        board.draw(canvas);
+
+                        Paint mPaint = new Paint(); // Кисть с настройкой размера текста на 30 для отрисовки колличества очков на 59 строчке
+                        mPaint.setTextSize(30);
+
+                        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics(); // Размер экрана
+                        canvas.drawText(Integer.toString(score), (float) (displaymetrics.widthPixels * 0.05), (float) (displaymetrics.heightPixels * 0.1), mPaint);
+                    } finally {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
+                }
+            }
+
+
+        }
+    }
+
+    // Таймер
+    class Timer extends CountDownTimer {
+
+
+        public Timer() {
+            super(Integer.MAX_VALUE, 50); // Каждые 100мс вызывать onTick
+
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (getWidth() != 0 && getHeight() != 0 && !firstUpdate) {
 
                 update(50); // Обновление
 
@@ -143,11 +189,11 @@ public class StandardCampaignPlayer extends View {
 
         }
 
+
         @Override
         public void onFinish() {
 
         }
     }
-
 }
 
