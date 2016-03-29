@@ -7,9 +7,11 @@ import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 
-public class EgyptCampaignPlayer extends View {
+public class EgyptCampaignPlayer extends SurfaceView implements SurfaceHolder.Callback {
 
     private EgyptBackground background;
     private EgyptButtons buttons;
@@ -32,10 +34,15 @@ public class EgyptCampaignPlayer extends View {
 
     private int grade;
 
+    private DrawThread drawThread;
+
+    boolean firstUpdate;
 
     // Конструктор
     public EgyptCampaignPlayer(Context context, int remainingTime, int silverGrade, int bronzeGrade, int speed, double speedMultiplier, int symbols) {
         super(context);
+
+        firstUpdate = true;
 
         this.context = context;
 
@@ -51,34 +58,9 @@ public class EgyptCampaignPlayer extends View {
 
         startTime = remainingTime;
 
-        Timer t = new Timer(); // Таймер (116) в отдельном потоке для запуска метода update()
-        t.start();
-
+        getHolder().addCallback(this);
     }
 
-    // Отрисовка
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        // Отрисовка кнопок, полоски времени, фона, доски
-        timer.draw(canvas);
-        background.draw(canvas);
-        board.draw(canvas);
-        buttons.draw(canvas);
-
-
-        //foreground.draw(canvas);
-
-
-        Paint mPaint = new Paint(); // Кисть с настройкой размера текста на 30 для отрисовки колличества очков на 59 строчке
-        mPaint.setTextSize(30);
-
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics(); // Размер экрана
-        canvas.drawText(score + "/" + symbols, (float) (displaymetrics.widthPixels * 0.05), (float) (displaymetrics.heightPixels * 0.1), mPaint);
-
-
-    }
 
     // Обновление
     private void update(int ms) {
@@ -103,9 +85,6 @@ public class EgyptCampaignPlayer extends View {
         buttons.update(ms);
         board.update(ms);
         timer.update(remainingTime);
-
-        // Перерисовка
-        invalidate();
     }
 
     // Этот метод вызывается при касании экрана
@@ -160,6 +139,89 @@ public class EgyptCampaignPlayer extends View {
 
     private void victory() {
 
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        drawThread = new DrawThread(getHolder());
+        drawThread.start();
+
+        Timer t = new Timer();
+        t.start();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        drawThread.requestStop();
+        boolean retry = true;
+        while (retry) {
+            try {
+                drawThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                //
+            }
+        }
+    }
+
+    public class DrawThread extends Thread {
+        private SurfaceHolder surfaceHolder;
+        private volatile boolean running = true;//флаг для остановки потока
+
+        public DrawThread(SurfaceHolder surfaceHolder) {
+            this.surfaceHolder = surfaceHolder;
+        }
+
+        public void requestStop() {
+            running = false;
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                if (firstUpdate) {
+                    timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
+                    background = new EgyptBackground(context, getWidth(), getHeight() /*, symbols, speed*/);
+                    buttons = new EgyptButtons(context, getWidth(), getHeight());
+                    board = new EgyptBoard(context, getWidth(), getHeight(), symbols, speed);
+
+                    buttons.next(board.next()); // Следующий символ
+
+                    firstUpdate = false;
+                }
+
+                Canvas canvas = surfaceHolder.lockCanvas();
+                if (canvas != null && !firstUpdate) {
+                    try {
+
+                        // Отрисовка кнопок, полоски времени, фона, доски
+                        timer.draw(canvas);
+                        background.draw(canvas);
+                        board.draw(canvas);
+                        buttons.draw(canvas);
+
+
+                        //foreground.draw(canvas);
+
+
+                        Paint mPaint = new Paint(); // Кисть с настройкой размера текста на 30 для отрисовки колличества очков на 59 строчке
+                        mPaint.setTextSize(30);
+
+                        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics(); // Размер экрана
+                        canvas.drawText(score + "/" + symbols, (float) (displaymetrics.widthPixels * 0.05), (float) (displaymetrics.heightPixels * 0.1), mPaint);
+                    } finally {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
+                }
+            }
+
+
+        }
     }
 
     // Таймер
