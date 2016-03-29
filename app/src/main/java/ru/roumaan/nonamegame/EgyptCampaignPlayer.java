@@ -226,28 +226,14 @@ public class EgyptCampaignPlayer extends SurfaceView implements SurfaceHolder.Ca
 
     // Таймер
     class Timer extends CountDownTimer {
-        boolean firstUpdate = true;
 
         public Timer() {
             super(Integer.MAX_VALUE, 50); // Каждые 100мс вызывать onTick
-            firstUpdate = true;
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
-            if(getWidth() != 0 && getHeight() != 0) {
-
-                if (firstUpdate) {
-                    timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
-                    background = new EgyptBackground(context, getWidth(), getHeight() /*, symbols, speed*/);
-                    buttons = new EgyptButtons(context, getWidth(), getHeight());
-                    board = new EgyptBoard(context, getWidth(), getHeight(), symbols, speed);
-
-                    buttons.next(board.next()); // Следующий символ
-
-                    firstUpdate = false;
-                }
-
+            if(getWidth() != 0 && getHeight() != 0 && !firstUpdate) {
 
                 update(50); // Обновление
 
