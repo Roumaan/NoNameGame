@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.util.Log;
 
 import java.util.Random;
 
@@ -46,95 +48,96 @@ public class EgyptBoard extends Board {
 
     public EgyptBoard(Context context, int width, int height, int symbols, int speed) {
 
-        symbolW = (int) (boardW/1.5);
-        symbolH = symbolW;
-
-        boardW = (int) (width*0.4);
-        boardH = (int) (boardW*1.5);
+        boardW = (int) (width*0.396);
+        boardH = (int) (height*3.122);
 
         boardX = (width - boardW)/2;
-        boardY = (height - boardH)*0.4;
+        boardY = height;
+
+        symbolW = (int) (boardW*0.231);
+        symbolH = (int) (boardH*0.0387);
 
         symbolX = boardX+(boardW-symbolW)/2;
-        symbolY = boardY+(boardH-symbolH)/2;
+        symbolY = boardY + boardH * 0.06;
+
+        symbolGap = (int)(height*0.0714);
 
         vX = 0;
-        vY = speed;
+        vY = -speed;
 
-        int resID = context.getResources().getIdentifier("gold_egypt_board_" + symbols, "drawable", context.getPackageName());
         GoldGradeBoardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                resID);
+                R.drawable.egypt_board);
         GoldGradeBoardBitmap = Bitmap.createScaledBitmap(GoldGradeBoardBitmap, boardW, boardH, false);
 
-        resID = context.getResources().getIdentifier("silver_egypt_board_" + symbols, "drawable", context.getPackageName());
         SilverGradeBoardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                resID);
+                R.drawable.standart_board);
         SilverGradeBoardBitmap = Bitmap.createScaledBitmap(SilverGradeBoardBitmap, boardW, boardH, false);
 
-        resID = context.getResources().getIdentifier("bronze_egypt_board_" + symbols, "drawable", context.getPackageName());
         BronzeGradeBoardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                resID);
+                R.drawable.standart_board);
         BronzeGradeBoardBitmap = Bitmap.createScaledBitmap(BronzeGradeBoardBitmap, boardW, boardH, false);
 
         boardBitmap = GoldGradeBoardBitmap;
 
-        int j = 0;
-        for (String i:
-                context.getResources().getStringArray(R.array.standart_symbols)) {
-            resID = context.getResources().getIdentifier(i, "drawable", context.getPackageName());
+        String[] names = context.getResources().getStringArray(R.array.standart_symbols);
+        symbolsBitmaps = new Bitmap[names.length];
+
+        for (int i = 0; i < names.length; i++) {
+            int resID = context.getResources().getIdentifier(names[i], "drawable", context.getPackageName());
             Bitmap symbolBitmap = BitmapFactory.decodeResource(
                     context.getResources(),
                     resID);
 
             symbolBitmap = Bitmap.createScaledBitmap(symbolBitmap, symbolW, symbolH, false);
-            symbolsBitmaps[j] = symbolBitmap;
-            j++;
+
+            symbolsBitmaps[i] = symbolBitmap;
         }
 
         prepare();
 
+    }
 
-        minusFourthSymbol = symbol;
-        minusThirdSymbol = symbol;
-        minusSecondSymbol = symbol;
-        minusFirstSymbol = symbol;
-
-        firstSymbol = symbol;
-        secondSymbol = symbol;
-        thirdSymbol = symbol;
-        fourthSymbol = symbol;
-
+    @Override
+    public void prepare() {
+        super.prepare();
 
         Random random = new Random();
 
-        minusFourthSymbolId = random.nextInt(symbolsBitmaps.length);
-        minusFourthSymbol.setBitmap(symbolsBitmaps[minusFourthSymbolId]);
-
-        minusThirdSymbolId = random.nextInt(symbolsBitmaps.length);
-        minusThirdSymbol.setBitmap(symbolsBitmaps[minusThirdSymbolId]);
-
-        minusSecondSymbolId = random.nextInt(symbolsBitmaps.length);
-        minusSecondSymbol.setBitmap(symbolsBitmaps[minusSecondSymbolId]);
-
-        minusFirstSymbolId = random.nextInt(symbolsBitmaps.length);
-        minusFirstSymbol.setBitmap(symbolsBitmaps[minusFirstSymbolId]);
-
-
+        Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
 
         firstSymbolId = random.nextInt(symbolsBitmaps.length);
-        firstSymbol.setBitmap(symbolsBitmaps[firstSymbolId]);
+        firstSymbol = new Sprite(symbolX,
+                symbolY + symbolH + symbolGap,
+                vX, vY,
+                symbolsInitialFrame,
+                symbolsBitmaps[firstSymbolId]);
+
 
         secondSymbolId = random.nextInt(symbolsBitmaps.length);
-        secondSymbol.setBitmap(symbolsBitmaps[secondSymbolId]);
+        secondSymbol = new Sprite(symbolX,
+                symbolY + symbolH * 2 + symbolGap * 2,
+                vX, vY,
+                symbolsInitialFrame,
+                symbolsBitmaps[secondSymbolId]);
 
         thirdSymbolId = random.nextInt(symbolsBitmaps.length);
-        thirdSymbol.setBitmap(symbolsBitmaps[thirdSymbolId]);
+        thirdSymbol = new Sprite(symbolX,
+                symbolY + symbolH * 3 + symbolGap * 3,
+                vX, vY,
+                symbolsInitialFrame,
+                symbolsBitmaps[thirdSymbolId]);
+
 
         fourthSymbolId = random.nextInt(symbolsBitmaps.length);
-        fourthSymbol.setBitmap(symbolsBitmaps[fourthSymbolId]);
+        fourthSymbol = new Sprite(symbolX,
+                symbolY + symbolH * 4 + symbolGap * 4,
+                vX, vY,
+                symbolsInitialFrame,
+                symbolsBitmaps[fourthSymbolId]);
+
     }
 
     public void setGrade(int grade) {
@@ -153,33 +156,67 @@ public class EgyptBoard extends Board {
     }
 
     @Override
-    void update(int ms) {
+    public void update(int ms) {
         super.update(ms);
 
-        minusFourthSymbol.update(ms);
-        minusThirdSymbol.update(ms);
-        minusSecondSymbol.update(ms);
-        minusFirstSymbol.update(ms);
+        Random random = new Random();
+
+        int i = random.nextInt(10);
+        board.setX(boardX - i);
+
+        if (minusFourthSymbol != null) {
+            minusFourthSymbol.update(ms);
+            minusFourthSymbol.setX(symbolX - i);
+        }
+        if (minusThirdSymbol != null) {
+            minusThirdSymbol.update(ms);
+            minusThirdSymbol.setX(symbolX - i);
+        }
+        if (minusSecondSymbol != null) {
+            minusSecondSymbol.update(ms);
+            minusSecondSymbol.setX(symbolX - i);
+        }
+        if (minusFirstSymbol != null) {
+            minusFirstSymbol.update(ms);
+            minusFirstSymbol.setX(symbolX - i);
+        }
+
+        symbol.setX(symbolX - i);
 
         firstSymbol.update(ms);
+        firstSymbol.setX(symbolX - i);
         secondSymbol.update(ms);
+        secondSymbol.setX(symbolX - i);
         thirdSymbol.update(ms);
+        thirdSymbol.setX(symbolX - i);
         fourthSymbol.update(ms);
+        fourthSymbol.setX(symbolX-i);
+
     }
 
     @Override
-    void draw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        minusFourthSymbol.draw(canvas);
-        minusThirdSymbol.draw(canvas);
-        minusSecondSymbol.draw(canvas);
-        minusFirstSymbol.draw(canvas);
+        if (minusFourthSymbol != null) {
+            minusFourthSymbol.draw(canvas);
+        }
+        if (minusThirdSymbol != null) {
+            minusThirdSymbol.draw(canvas);
+        }
+        if (minusSecondSymbol != null) {
+            minusSecondSymbol.draw(canvas);
+        }
+        if (minusFirstSymbol != null) {
+            minusFirstSymbol.draw(canvas);
+        }
 
-        firstSymbol.draw(canvas);
-        secondSymbol.draw(canvas);
-        thirdSymbol.draw(canvas);
         fourthSymbol.draw(canvas);
+        thirdSymbol.draw(canvas);
+        secondSymbol.draw(canvas);
+        firstSymbol.draw(canvas);
+
+
     }
 
     @Override
@@ -194,8 +231,12 @@ public class EgyptBoard extends Board {
         minusSecondSymbolId = minusFirstSymbolId;
         minusSecondSymbol = minusFirstSymbol;
 
+        minusFirstSymbolId = symbolId;
+        minusFirstSymbol = symbol;
+
         symbolId = firstSymbolId;
         symbol = firstSymbol;
+
 
         firstSymbolId = secondSymbolId;
         firstSymbol = secondSymbol;
@@ -207,13 +248,19 @@ public class EgyptBoard extends Board {
         thirdSymbol = fourthSymbol;
 
         Random random = new Random();
-        fourthSymbolId = random.nextInt(symbolsBitmaps.length);
-        fourthSymbol = symbol;
 
-        fourthSymbol.setBitmap(symbolsBitmaps[fourthSymbolId]);
-        fourthSymbol.setY(thirdSymbol.getY() + symbolH + symbolGap );
+        Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
+
+        fourthSymbolId = random.nextInt(symbolsBitmaps.length);
+        fourthSymbol = new Sprite(symbolX,
+                symbol.getY() + symbolH * 4 + symbolGap * 4,
+                vX, vY,
+                symbolsInitialFrame,
+                symbolsBitmaps[fourthSymbolId]);
+
 
         return symbolId;
+
     }
 
     public boolean isBeyond() {
