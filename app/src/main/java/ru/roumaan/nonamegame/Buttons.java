@@ -50,21 +50,21 @@ abstract public class Buttons {
     }
 
     void next(int id) {
-        Log.i("abc", "4");
+
         Random random = new Random();
         true_button = random.nextInt(4);
 
         ArrayList<Integer> ids = new ArrayList<>();
-        Log.i("abc", "5");
+
         for (int i = 0; i < symbolsBitmaps.length-1; i++) {
-            Log.i("abc", "6");
+
 
             if (i != id) {
                 ids.add(i);
             }
         }
 
-        Log.i("abc", "7");
+
         int anId;
         switch (true_button) {
             case 0 :
@@ -128,7 +128,7 @@ abstract public class Buttons {
                 ids.remove(anId);
 
         }
-        Log.i("abc", "7");
+
     }
 
     void draw(Canvas canvas) {
