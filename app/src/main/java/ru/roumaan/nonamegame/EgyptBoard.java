@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.Random;
 
@@ -67,12 +66,14 @@ public class EgyptBoard extends Board {
 
         boardX = (width - boardW)/2+10;
         boardY = height+10;
+        
+
 
         symbolW = (int) (boardW*0.231);
         symbolH = (int) (boardH*0.0387);
 
-        symbolX = boardX+(boardW-symbolW)/2+10;
-        symbolY = boardY + boardH * 0.06+10;
+        symbolX = boardX+(boardW-symbolW)/2;
+        symbolY = boardY + boardH * 0.06;
 
         symbolGap = (int)(height*0.0714);
 
@@ -94,12 +95,12 @@ public class EgyptBoard extends Board {
 
         SilverGradeBoardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_board);
+                R.drawable.egypt_board);
         SilverGradeBoardBitmap = Bitmap.createScaledBitmap(SilverGradeBoardBitmap, boardW, boardH, false);
 
         BronzeGradeBoardBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_board);
+                R.drawable.egypt_board);
         BronzeGradeBoardBitmap = Bitmap.createScaledBitmap(BronzeGradeBoardBitmap, boardW, boardH, false);
 
         boardBitmap = GoldGradeBoardBitmap;
