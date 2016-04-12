@@ -15,7 +15,18 @@ public class EgyptBoard extends Board {
     private Bitmap GoldGradeBoardBitmap;
     private Bitmap SilverGradeBoardBitmap;
     private Bitmap BronzeGradeBoardBitmap;
+    private Bitmap EndOfBordBitmap;
+    
+    int heightOfCanvas;
+    int widthOfCanvas;
 
+    Sprite endOfBoard;
+    
+    int endOfBoardW;
+    int endOfBoardH;
+    
+    double endOfBoardX;
+    double endOfBoardY;
 
     Sprite minusFourthSymbol;
     int minusFourthSymbolId;
@@ -48,6 +59,9 @@ public class EgyptBoard extends Board {
 
     public EgyptBoard(Context context, int width, int height, int symbols, int speed) {
 
+        heightOfCanvas = height;
+        widthOfCanvas = width;
+
         boardW = (int) (width*0.396);
         boardH = (int) (height*3.122);
 
@@ -62,6 +76,14 @@ public class EgyptBoard extends Board {
 
         symbolGap = (int)(height*0.0714);
 
+        
+        endOfBoardW = boardW+boardW/4;
+        endOfBoardH = (int) (height * 0.146);
+        
+        		
+        endOfBoardX = boardX - boardW/4/2;
+        endOfBoardY = boardY + boardH * 0.06 + symbolH*symbols + symbolGap*(symbols-1) + symbolGap/2;
+        
         vX = 0;
         vY = -speed;
 
@@ -81,6 +103,11 @@ public class EgyptBoard extends Board {
         BronzeGradeBoardBitmap = Bitmap.createScaledBitmap(BronzeGradeBoardBitmap, boardW, boardH, false);
 
         boardBitmap = GoldGradeBoardBitmap;
+        
+        EndOfBordBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.end_of_egypt_board);
+        EndOfBordBitmap = Bitmap.createScaledBitmap(EndOfBordBitmap, endOfBoardW, endOfBoardH, false);
 
         String[] names = context.getResources().getStringArray(R.array.standart_symbols);
         symbolsBitmaps = new Bitmap[names.length];
@@ -103,6 +130,11 @@ public class EgyptBoard extends Board {
     @Override
     public void prepare() {
         super.prepare();
+
+
+        Rect endOfBoardInitialFrame = new Rect(0, 0,  endOfBoardW, endOfBoardH);
+        
+        endOfBoard = new Sprite(endOfBoardX, endOfBoardY, vX, vY, endOfBoardInitialFrame, EndOfBordBitmap);
 
         Random random = new Random();
 
@@ -159,10 +191,46 @@ public class EgyptBoard extends Board {
     public void update(int ms) {
         super.update(ms);
 
+        if (endOfBoard.getY() + endOfBoardH <= heightOfCanvas) {
+            vY = 0;
+
+            board.setVy(vY);
+            endOfBoard.setVy(vY);
+
+            if (minusFourthSymbol != null) {
+                minusFourthSymbol.setVy(vY);
+            }
+            if (minusThirdSymbol != null) {
+                minusThirdSymbol.setVy(vY);
+            }
+            if (minusSecondSymbol != null) {
+                minusSecondSymbol.setVy(vY);
+            }
+            if (minusFirstSymbol != null) {
+                minusFirstSymbol.setVy(vY);
+            }
+
+            symbol.setVy(vY);
+
+            firstSymbol.setVy(vY);
+            secondSymbol.setVy(vY);
+            thirdSymbol.setVy(vY);
+            fourthSymbol.setVy(vY);
+        }
+
+        //<!
+        endOfBoard.update(ms);
+        //!>
+
         Random random = new Random();
 
         int i = random.nextInt(10);
+        int j = random.nextInt(10);
 
+        board.shakeIt(i, j);
+
+        endOfBoard.shakeIt(i, j);
+        
         if (minusFourthSymbol != null) {
             minusFourthSymbol.update(ms);
             minusFourthSymbol.shakeIt(i, j);
@@ -197,6 +265,7 @@ public class EgyptBoard extends Board {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        endOfBoard.draw(canvas);
         if (minusFourthSymbol != null) {
             minusFourthSymbol.draw(canvas);
         }
