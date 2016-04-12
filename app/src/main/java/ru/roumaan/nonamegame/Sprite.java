@@ -17,6 +17,9 @@ public class Sprite {
     private double frameTime;
     private double timeForCurrentFrame;
 
+    private double drawX;
+    private double drawY;
+
     private double x;
     private double y;
 
@@ -25,8 +28,16 @@ public class Sprite {
 
     private int padding;
 
+    private int xShakeStrength;
+    private int yShakeStrength;
+
+    private boolean isShaking;
+
     public Sprite(double x, double y, double velocityX, double velocityY,
                   Rect initialFrame, Bitmap bitmap) {
+
+        drawX = x;
+        drawY = y;
 
         this.x = x;
         this.y = y;
@@ -71,14 +82,22 @@ public class Sprite {
         x = x + velocityX * (ms/1000.0);
         y = y + velocityY * (ms/1000.0);
 
+        drawX = x;
+        drawY = y;
+
+        if (isShaking) {
+            drawX -= xShakeStrength;
+            drawY -= yShakeStrength;
+            isShaking = false;
+        }
     }
 
     public void draw (Canvas canvas) {
 
         Paint p = new Paint();
 
-        Rect destination = new Rect((int)x, (int)y, (int)(x + frameWidth),
-                (int)(y + frameHeight));
+        Rect destination = new Rect((int)drawX, (int)drawY, (int)(drawX + frameWidth),
+                (int)(drawY + frameHeight));
 
         canvas.drawBitmap(bitmap, frames.get(currentFrame), destination, p);
 
@@ -89,6 +108,12 @@ public class Sprite {
                 (int)y+padding,
                 (int)(x + frameWidth - 2 *padding),
                 (int)(y + frameHeight - 2* padding));
+    }
+
+    public void shakeIt(int xStrength, int yStrength) {
+        xShakeStrength = xStrength;
+        yShakeStrength = yStrength;
+        isShaking = true;
     }
 
     public boolean intersect (Sprite s) {

@@ -62,9 +62,8 @@ public class EgyptBackground extends Background {
         Random random = new Random();
 
         int i = random.nextInt(20);
-        sprite.setX(x-i);
-
         int j = random.nextInt(20);
-        sprite.setY(y-j);
+
+        sprite.shakeIt(i, j);
     }
 }
