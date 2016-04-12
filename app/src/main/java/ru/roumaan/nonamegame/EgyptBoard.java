@@ -51,16 +51,12 @@ public class EgyptBoard extends Board {
         boardW = (int) (width*0.396);
         boardH = (int) (height*3.122);
 
-        boardX = (width - boardW)/2;
-        boardY = height;
         boardX = (width - boardW)/2+10;
         boardY = height+10;
 
         symbolW = (int) (boardW*0.231);
         symbolH = (int) (boardH*0.0387);
 
-        symbolX = boardX+(boardW-symbolW)/2;
-        symbolY = boardY + boardH * 0.06;
         symbolX = boardX+(boardW-symbolW)/2+10;
         symbolY = boardY + boardH * 0.06+10;
 
@@ -166,43 +162,33 @@ public class EgyptBoard extends Board {
         Random random = new Random();
 
         int i = random.nextInt(10);
-        board.setX(boardX - i);
 
         if (minusFourthSymbol != null) {
             minusFourthSymbol.update(ms);
-            minusFourthSymbol.setX(symbolX - i);
             minusFourthSymbol.shakeIt(i, j);
         }
         if (minusThirdSymbol != null) {
             minusThirdSymbol.update(ms);
-            minusThirdSymbol.setX(symbolX - i);
             minusThirdSymbol.shakeIt(i, j);
         }
         if (minusSecondSymbol != null) {
             minusSecondSymbol.update(ms);
-            minusSecondSymbol.setX(symbolX - i);
             minusSecondSymbol.shakeIt(i, j);
         }
         if (minusFirstSymbol != null) {
             minusFirstSymbol.update(ms);
-            minusFirstSymbol.setX(symbolX - i);
             minusFirstSymbol.shakeIt(i, j);
         }
 
-        symbol.setX(symbolX - i);
         symbol.shakeIt(i, j);
 
         firstSymbol.update(ms);
-        firstSymbol.setX(symbolX - i);
         firstSymbol.shakeIt(i, j);
         secondSymbol.update(ms);
-        secondSymbol.setX(symbolX - i);
         secondSymbol.shakeIt(i, j);
         thirdSymbol.update(ms);
-        thirdSymbol.setX(symbolX - i);
         thirdSymbol.shakeIt(i, j);
         fourthSymbol.update(ms);
-        fourthSymbol.setX(symbolX-i);
         fourthSymbol.shakeIt(i, j);
 
     }
