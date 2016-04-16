@@ -27,31 +27,11 @@ public class EgyptBoard extends Board {
     double endOfBoardX;
     double endOfBoardY;
 
-    Sprite minusFourthSymbol;
-    int minusFourthSymbolId;
-
-    Sprite minusThirdSymbol;
-    int minusThirdSymbolId;
-
-    Sprite minusSecondSymbol;
-    int minusSecondSymbolId;
-
-    Sprite minusFirstSymbol;
-    int minusFirstSymbolId;
-
-
-
-    Sprite firstSymbol;
-    int firstSymbolId;
-
-    Sprite secondSymbol;
-    int secondSymbolId;
-
-    Sprite thirdSymbol;
-    int thirdSymbolId;
-
-    Sprite fourthSymbol;
-    int fourthSymbolId;
+    Sprite[] symbolsHigher;
+    int[] symbolsHigherIds;
+    
+    Sprite[] symbolsBelow;
+    int[] symbolsBelowIds;
 
 
     int symbolGap;
@@ -141,35 +121,21 @@ public class EgyptBoard extends Board {
 
         Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
 
-        firstSymbolId = random.nextInt(symbolsBitmaps.length);
-        firstSymbol = new Sprite(symbolX,
-                symbolY + symbolH + symbolGap,
-                vX, vY,
-                symbolsInitialFrame,
-                symbolsBitmaps[firstSymbolId]);
+        symbolsHigherIds = new int[10];
+        symbolsHigher = new Sprite[10];
 
+        symbolsBelowIds = new int[10];
+        symbolsBelow = new Sprite[10];
 
-        secondSymbolId = random.nextInt(symbolsBitmaps.length);
-        secondSymbol = new Sprite(symbolX,
-                symbolY + symbolH * 2 + symbolGap * 2,
-                vX, vY,
-                symbolsInitialFrame,
-                symbolsBitmaps[secondSymbolId]);
+        for (int i = 0; i < symbolsBelow.length; i++) {
+        	symbolsBelowIds[i] = random.nextInt(symbolsBitmaps.length);
+        	symbolsBelow[i] = new Sprite(symbolX,
+        		symbolY + symbolH*(i+1) + symbolGap*(i+1),
+        		vX, vY,
+        		symbolsInitialFrame,
+        		symbolsBitmaps[symbolsBelowIds[i]]);
+        }
 
-        thirdSymbolId = random.nextInt(symbolsBitmaps.length);
-        thirdSymbol = new Sprite(symbolX,
-                symbolY + symbolH * 3 + symbolGap * 3,
-                vX, vY,
-                symbolsInitialFrame,
-                symbolsBitmaps[thirdSymbolId]);
-
-
-        fourthSymbolId = random.nextInt(symbolsBitmaps.length);
-        fourthSymbol = new Sprite(symbolX,
-                symbolY + symbolH * 4 + symbolGap * 4,
-                vX, vY,
-                symbolsInitialFrame,
-                symbolsBitmaps[fourthSymbolId]);
 
     }
 
@@ -192,36 +158,35 @@ public class EgyptBoard extends Board {
     public void update(int ms) {
         super.update(ms);
 
+        for (int i = 0; i < symbolsHigher.length; i++) {
+            if (symbolsHigher[i] != null) {
+                if (symbolsHigher[i].getY() < 0 - symbolH) {
+                    symbolsHigher[i] = null;
+                }
+            }
+        }
+
         if (endOfBoard.getY() + endOfBoardH <= heightOfCanvas) {
             vY = 0;
 
             board.setVy(vY);
             endOfBoard.setVy(vY);
+            for (Sprite aSymbolHigher : symbolsHigher) {
+                if (aSymbolHigher != null) {
+                    aSymbolHigher.setVy(vY);
+                }
+            }
 
-            if (minusFourthSymbol != null) {
-                minusFourthSymbol.setVy(vY);
-            }
-            if (minusThirdSymbol != null) {
-                minusThirdSymbol.setVy(vY);
-            }
-            if (minusSecondSymbol != null) {
-                minusSecondSymbol.setVy(vY);
-            }
-            if (minusFirstSymbol != null) {
-                minusFirstSymbol.setVy(vY);
+            for (Sprite aSymbolBelow : symbolsBelow) {
+                aSymbolBelow.setVy(vY);
             }
 
             symbol.setVy(vY);
 
-            firstSymbol.setVy(vY);
-            secondSymbol.setVy(vY);
-            thirdSymbol.setVy(vY);
-            fourthSymbol.setVy(vY);
+
         }
 
-        //<!
         endOfBoard.update(ms);
-        //!>
 
         Random random = new Random();
 
@@ -231,101 +196,76 @@ public class EgyptBoard extends Board {
         board.shakeIt(i, j);
 
         endOfBoard.shakeIt(i, j);
-        
-        if (minusFourthSymbol != null) {
-            minusFourthSymbol.update(ms);
-            minusFourthSymbol.shakeIt(i, j);
-        }
-        if (minusThirdSymbol != null) {
-            minusThirdSymbol.update(ms);
-            minusThirdSymbol.shakeIt(i, j);
-        }
-        if (minusSecondSymbol != null) {
-            minusSecondSymbol.update(ms);
-            minusSecondSymbol.shakeIt(i, j);
-        }
-        if (minusFirstSymbol != null) {
-            minusFirstSymbol.update(ms);
-            minusFirstSymbol.shakeIt(i, j);
+
+        for (Sprite aSymbolHigher : symbolsHigher) {
+            if (aSymbolHigher != null) {
+                aSymbolHigher.update(ms);
+                aSymbolHigher.shakeIt(i, j);
+            }
         }
 
         symbol.shakeIt(i, j);
 
-        firstSymbol.update(ms);
-        firstSymbol.shakeIt(i, j);
-        secondSymbol.update(ms);
-        secondSymbol.shakeIt(i, j);
-        thirdSymbol.update(ms);
-        thirdSymbol.shakeIt(i, j);
-        fourthSymbol.update(ms);
-        fourthSymbol.shakeIt(i, j);
-
+        for (Sprite aSymbolBelow : symbolsBelow) {
+            if (aSymbolBelow != null) {
+                aSymbolBelow.update(ms);
+                aSymbolBelow.shakeIt(i, j);
+            }
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+
+
+        for (Sprite aSymbolHigher : symbolsHigher) {
+            if (aSymbolHigher != null) {
+                aSymbolHigher.draw(canvas);
+            }
+        }
+
+        for (Sprite aSymbolBelow : symbolsBelow) {
+            aSymbolBelow.draw(canvas);
+        }
+
         endOfBoard.draw(canvas);
-        if (minusFourthSymbol != null) {
-            minusFourthSymbol.draw(canvas);
-        }
-        if (minusThirdSymbol != null) {
-            minusThirdSymbol.draw(canvas);
-        }
-        if (minusSecondSymbol != null) {
-            minusSecondSymbol.draw(canvas);
-        }
-        if (minusFirstSymbol != null) {
-            minusFirstSymbol.draw(canvas);
-        }
-
-        fourthSymbol.draw(canvas);
-        thirdSymbol.draw(canvas);
-        secondSymbol.draw(canvas);
-        firstSymbol.draw(canvas);
-
-
     }
 
     @Override
     int next() {
 
-        minusFourthSymbolId = minusThirdSymbolId;
-        minusFourthSymbol = minusThirdSymbol;
+        for (int i = symbolsHigher.length-1; i >= 0; i--) {
+            if (i == 0) {
+                symbolsHigher[i] = symbol;
+                symbolsHigherIds[i] = symbolId;
+                break;
+            }
 
-        minusThirdSymbolId = minusSecondSymbolId;
-        minusThirdSymbol = minusSecondSymbol;
-
-        minusSecondSymbolId = minusFirstSymbolId;
-        minusSecondSymbol = minusFirstSymbol;
-
-        minusFirstSymbolId = symbolId;
-        minusFirstSymbol = symbol;
-
-        symbolId = firstSymbolId;
-        symbol = firstSymbol;
+            symbolsHigher[i] = symbolsHigher[i-1];
+            symbolsHigherIds[i] = symbolsHigherIds[i-1];
+        }
 
 
-        firstSymbolId = secondSymbolId;
-        firstSymbol = secondSymbol;
+        symbolId = symbolsBelowIds[0];
+        symbol = symbolsBelow[0];
 
-        secondSymbolId = thirdSymbolId;
-        secondSymbol = thirdSymbol;
-
-        thirdSymbolId = fourthSymbolId;
-        thirdSymbol = fourthSymbol;
+        for (int i = 0; i < symbolsBelow.length-1; i++) {
+            symbolsBelow[i] = symbolsBelow[i+1];
+            symbolsBelowIds[i] = symbolsBelowIds[i+1];
+        }
 
         Random random = new Random();
 
         Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
 
-        fourthSymbolId = random.nextInt(symbolsBitmaps.length);
-        fourthSymbol = new Sprite(symbolX,
-                symbol.getY() + symbolH * 4 + symbolGap * 4,
+        symbolsBelowIds[symbolsBelowIds.length-1] = random.nextInt(symbolsBitmaps.length);
+        symbolsBelow[symbolsBelow.length-1] = new Sprite(symbolX,
+                symbol.getY() + symbolH * symbolsBelow.length + symbolGap * symbolsBelow.length,
                 vX, vY,
                 symbolsInitialFrame,
-                symbolsBitmaps[fourthSymbolId]);
+                symbolsBitmaps[symbolsBelowIds[symbolsBelowIds.length-1]]);
 
 
         return symbolId;
