@@ -28,9 +28,19 @@ public class EgyptBoard extends Board {
     double endOfBoardY;
 
     Sprite[] symbolsHigher;
+    Sprite[] platesHigher;
     int[] symbolsHigherIds;
-    
+
+    Sprite plate;
+    Bitmap plateBitmap;
+    Bitmap pressedPlateBitmap;
+    int plateW;
+    int plateH;
+    double plateX;
+    double plateY;
+
     Sprite[] symbolsBelow;
+    Sprite[] platesBelow;
     int[] symbolsBelowIds;
 
 
@@ -46,16 +56,20 @@ public class EgyptBoard extends Board {
 
         boardX = (width - boardW)/2+10;
         boardY = height+10;
-        
 
+        symbolGap = (int)(height*0.0714);
 
         symbolW = (int) (boardW*0.231);
         symbolH = (int) (boardH*0.0387);
 
         symbolX = boardX+(boardW-symbolW)/2;
-        symbolY = boardY + boardH * 0.06;
+        symbolY = boardY + boardH * 0.06 + symbolGap/2;
 
-        symbolGap = (int)(height*0.0714);
+        plateW = (int) (boardW*0.3098);
+        plateH = (int) (boardH*0.048);
+
+        plateX = symbolX + (symbolW-plateW)/2;
+        plateY = symbolY + (symbolH-plateH)/2;
 
         
         endOfBoardW = boardW+boardW/4;
@@ -90,6 +104,16 @@ public class EgyptBoard extends Board {
                 R.drawable.end_of_egypt_board);
         EndOfBordBitmap = Bitmap.createScaledBitmap(EndOfBordBitmap, endOfBoardW, endOfBoardH, false);
 
+        plateBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.plate);
+        plateBitmap = Bitmap.createScaledBitmap(plateBitmap, plateW, plateH, false);
+
+        pressedPlateBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.pressed_plate);
+        pressedPlateBitmap = Bitmap.createScaledBitmap(pressedPlateBitmap, plateW, plateH, false);
+
         String[] names = context.getResources().getStringArray(R.array.standart_symbols);
         symbolsBitmaps = new Bitmap[names.length];
 
@@ -120,10 +144,19 @@ public class EgyptBoard extends Board {
         Random random = new Random();
 
         Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
+        Rect plateInitialFrame = new Rect(0, 0, plateW, plateH);
 
+        platesHigher = new Sprite[10];
         symbolsHigherIds = new int[10];
         symbolsHigher = new Sprite[10];
 
+        plate = new Sprite(plateX,
+                plateY,
+                vX, vY,
+                plateInitialFrame,
+                plateBitmap);
+
+        platesBelow = new Sprite [10];
         symbolsBelowIds = new int[10];
         symbolsBelow = new Sprite[10];
 
@@ -136,7 +169,13 @@ public class EgyptBoard extends Board {
         		symbolsBitmaps[symbolsBelowIds[i]]);
         }
 
-
+        for (int i = 0; i < platesBelow.length; i++) {
+            platesBelow[i] = new Sprite(plateX,
+                    symbolsBelow[i].getY()+ (symbolH-plateH)/2,
+                    vX, vY,
+                    plateInitialFrame,
+                    plateBitmap);
+        }
     }
 
     public void setGrade(int grade) {
@@ -166,19 +205,41 @@ public class EgyptBoard extends Board {
             }
         }
 
+        for (int i = 0; i < platesHigher.length; i++) {
+            if (platesHigher[i] != null) {
+                if (platesHigher[i].getY() < 0 - plateH) {
+                    symbolsHigher[i] = null;
+                }
+            }
+        }
+
+
         if (endOfBoard.getY() + endOfBoardH <= heightOfCanvas) {
             vY = 0;
 
             board.setVy(vY);
             endOfBoard.setVy(vY);
+
             for (Sprite aSymbolHigher : symbolsHigher) {
                 if (aSymbolHigher != null) {
                     aSymbolHigher.setVy(vY);
                 }
             }
 
+            for (Sprite aPlateHigher : platesHigher) {
+                if (aPlateHigher != null) {
+                    aPlateHigher.setVy(vY);
+                }
+            }
+
+            plate.setVy(vY);
+
             for (Sprite aSymbolBelow : symbolsBelow) {
                 aSymbolBelow.setVy(vY);
+            }
+
+            for (Sprite aPlateBelow : platesBelow) {
+                aPlateBelow.setVy(vY);
             }
 
             symbol.setVy(vY);
@@ -204,13 +265,28 @@ public class EgyptBoard extends Board {
             }
         }
 
+        plate.update(ms);
+        plate.shakeIt(i, j);
+
+        for (Sprite aPlateHigher : platesHigher) {
+            if (aPlateHigher != null) {
+                aPlateHigher.update(ms);
+                aPlateHigher.shakeIt(i, j);
+            }
+        }
+
         symbol.shakeIt(i, j);
 
+
         for (Sprite aSymbolBelow : symbolsBelow) {
-            if (aSymbolBelow != null) {
-                aSymbolBelow.update(ms);
-                aSymbolBelow.shakeIt(i, j);
-            }
+            aSymbolBelow.update(ms);
+            aSymbolBelow.shakeIt(i, j);
+        }
+
+
+        for (Sprite aPlateBelow : platesBelow) {
+            aPlateBelow.update(ms);
+            aPlateBelow.shakeIt(i, j);
         }
     }
 
@@ -218,7 +294,11 @@ public class EgyptBoard extends Board {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-
+        for (Sprite aPlateHigher : platesHigher) {
+            if (aPlateHigher != null) {
+                aPlateHigher.draw(canvas);
+            }
+        }
 
         for (Sprite aSymbolHigher : symbolsHigher) {
             if (aSymbolHigher != null) {
@@ -226,9 +306,18 @@ public class EgyptBoard extends Board {
             }
         }
 
+        plate.draw(canvas);
+        symbol.draw(canvas);
+
+        for (Sprite aPlateBelow : platesBelow) {
+            aPlateBelow.draw(canvas);
+        }
+
         for (Sprite aSymbolBelow : symbolsBelow) {
             aSymbolBelow.draw(canvas);
         }
+
+
 
         endOfBoard.draw(canvas);
     }
@@ -247,18 +336,35 @@ public class EgyptBoard extends Board {
             symbolsHigherIds[i] = symbolsHigherIds[i-1];
         }
 
+        for (int i = platesHigher.length-1; i >= 0; i--) {
+            if (i == 0) {
+                platesHigher[i] = plate;
+                break;
+            }
+
+            platesHigher[i] = platesHigher[i-1];
+        }
+
 
         symbolId = symbolsBelowIds[0];
         symbol = symbolsBelow[0];
+
+        plate.setBitmap(pressedPlateBitmap);
+        plate = platesBelow[0];
 
         for (int i = 0; i < symbolsBelow.length-1; i++) {
             symbolsBelow[i] = symbolsBelow[i+1];
             symbolsBelowIds[i] = symbolsBelowIds[i+1];
         }
 
+        for (int i = 0; i < platesBelow.length-1; i++) {
+            platesBelow[i] = platesBelow[i+1];
+        }
+
         Random random = new Random();
 
         Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
+        Rect plateInitialFrame = new Rect(0, 0, plateW, plateH);
 
         symbolsBelowIds[symbolsBelowIds.length-1] = random.nextInt(symbolsBitmaps.length);
         symbolsBelow[symbolsBelow.length-1] = new Sprite(symbolX,
@@ -266,6 +372,12 @@ public class EgyptBoard extends Board {
                 vX, vY,
                 symbolsInitialFrame,
                 symbolsBitmaps[symbolsBelowIds[symbolsBelowIds.length-1]]);
+
+        platesBelow[platesBelow.length-1] = new Sprite(plateX,
+                plate.getY() + plateH*platesBelow.length + symbolGap*platesBelow.length,
+                vX, vY,
+                plateInitialFrame,
+                plateBitmap);
 
 
         return symbolId;
