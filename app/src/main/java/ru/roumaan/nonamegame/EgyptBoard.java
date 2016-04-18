@@ -15,7 +15,9 @@ public class EgyptBoard extends Board {
     private Bitmap SilverGradeBoardBitmap;
     private Bitmap BronzeGradeBoardBitmap;
     private Bitmap EndOfBordBitmap;
-    
+
+    boolean justCreated;
+
     int heightOfCanvas;
     int widthOfCanvas;
 
@@ -130,6 +132,7 @@ public class EgyptBoard extends Board {
 
         prepare();
 
+        justCreated = true;
     }
 
     @Override
@@ -325,60 +328,64 @@ public class EgyptBoard extends Board {
     @Override
     int next() {
 
-        for (int i = symbolsHigher.length-1; i >= 0; i--) {
-            if (i == 0) {
-                symbolsHigher[i] = symbol;
-                symbolsHigherIds[i] = symbolId;
-                break;
+        if (!justCreated) {
+            for (int i = symbolsHigher.length - 1; i >= 0; i--) {
+                if (i == 0) {
+                    symbolsHigher[i] = symbol;
+                    symbolsHigherIds[i] = symbolId;
+                    break;
+                }
+
+                symbolsHigher[i] = symbolsHigher[i - 1];
+                symbolsHigherIds[i] = symbolsHigherIds[i - 1];
             }
 
-            symbolsHigher[i] = symbolsHigher[i-1];
-            symbolsHigherIds[i] = symbolsHigherIds[i-1];
-        }
+            for (int i = platesHigher.length - 1; i >= 0; i--) {
+                if (i == 0) {
+                    platesHigher[i] = plate;
+                    break;
+                }
 
-        for (int i = platesHigher.length-1; i >= 0; i--) {
-            if (i == 0) {
-                platesHigher[i] = plate;
-                break;
+                platesHigher[i] = platesHigher[i - 1];
             }
 
-            platesHigher[i] = platesHigher[i-1];
+
+            symbolId = symbolsBelowIds[0];
+            symbol = symbolsBelow[0];
+
+            plate.setBitmap(pressedPlateBitmap);
+            plate = platesBelow[0];
+
+            for (int i = 0; i < symbolsBelow.length - 1; i++) {
+                symbolsBelow[i] = symbolsBelow[i + 1];
+                symbolsBelowIds[i] = symbolsBelowIds[i + 1];
+            }
+
+            for (int i = 0; i < platesBelow.length - 1; i++) {
+                platesBelow[i] = platesBelow[i + 1];
+            }
+
+            Random random = new Random();
+
+            Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
+            Rect plateInitialFrame = new Rect(0, 0, plateW, plateH);
+
+            symbolsBelowIds[symbolsBelowIds.length - 1] = random.nextInt(symbolsBitmaps.length);
+            symbolsBelow[symbolsBelow.length - 1] = new Sprite(symbolX,
+                    symbol.getY() + symbolH * symbolsBelow.length + symbolGap * symbolsBelow.length,
+                    vX, vY,
+                    symbolsInitialFrame,
+                    symbolsBitmaps[symbolsBelowIds[symbolsBelowIds.length - 1]]);
+
+            platesBelow[platesBelow.length - 1] = new Sprite(plateX,
+                    plate.getY() + plateH * platesBelow.length + symbolGap * platesBelow.length,
+                    vX, vY,
+                    plateInitialFrame,
+                    plateBitmap);
+
+        } else {
+            justCreated = false;
         }
-
-
-        symbolId = symbolsBelowIds[0];
-        symbol = symbolsBelow[0];
-
-        plate.setBitmap(pressedPlateBitmap);
-        plate = platesBelow[0];
-
-        for (int i = 0; i < symbolsBelow.length-1; i++) {
-            symbolsBelow[i] = symbolsBelow[i+1];
-            symbolsBelowIds[i] = symbolsBelowIds[i+1];
-        }
-
-        for (int i = 0; i < platesBelow.length-1; i++) {
-            platesBelow[i] = platesBelow[i+1];
-        }
-
-        Random random = new Random();
-
-        Rect symbolsInitialFrame = new Rect(0, 0, symbolW, symbolH);
-        Rect plateInitialFrame = new Rect(0, 0, plateW, plateH);
-
-        symbolsBelowIds[symbolsBelowIds.length-1] = random.nextInt(symbolsBitmaps.length);
-        symbolsBelow[symbolsBelow.length-1] = new Sprite(symbolX,
-                symbol.getY() + symbolH * symbolsBelow.length + symbolGap * symbolsBelow.length,
-                vX, vY,
-                symbolsInitialFrame,
-                symbolsBitmaps[symbolsBelowIds[symbolsBelowIds.length-1]]);
-
-        platesBelow[platesBelow.length-1] = new Sprite(plateX,
-                plate.getY() + plateH*platesBelow.length + symbolGap*platesBelow.length,
-                vX, vY,
-                plateInitialFrame,
-                plateBitmap);
-
 
         return symbolId;
 
