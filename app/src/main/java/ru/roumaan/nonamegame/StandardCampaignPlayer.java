@@ -15,7 +15,7 @@ public class StandardCampaignPlayer extends View {
     StandardBackground background;
     StandardButtons buttons;
     StandardBoard board;
-    GameTimer timer; // Полоска времени
+    StandardGameTimer timer; // Полоска времени
     Context context; // Context нужен для получения размера экрана на 58
 
 
@@ -72,7 +72,7 @@ public class StandardCampaignPlayer extends View {
         background.update(ms);
         buttons.update(ms);
         board.update(ms);
-        timer.update(remainingTime);
+        timer.update(ms, remainingTime);
 
         Log.i("abc", "3");
         // Перерисовка
@@ -126,13 +126,13 @@ public class StandardCampaignPlayer extends View {
             if(getWidth() != 0 && getHeight() != 0) {
 
                 if (firstUpdate) {
-                    timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
+                    timer = new StandardGameTimer(context, remainingTime, getWidth(), getHeight());
                     background = new StandardBackground(context, getWidth(), getHeight());
                     buttons = new StandardButtons(context, getWidth(), getHeight());
                     board = new StandardBoard(context, getWidth(), getHeight());
-                    Log.i("abc", "1");
+
                     buttons.next(board.next()); // Следующий символ
-                    Log.i("abc", "9");
+
                     firstUpdate = false;
                 }
 

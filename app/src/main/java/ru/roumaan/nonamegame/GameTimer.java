@@ -1,60 +1,56 @@
 package ru.roumaan.nonamegame;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.DisplayMetrics;
+import android.graphics.Rect;
 
-public class GameTimer {
+abstract public class GameTimer {
     Paint mPaint = new  Paint();
-    Bitmap remainingTimeBitmap;
-    Bitmap endingTimeBitmap;
+    Bitmap remainingTimeStripBitmap;
+    Bitmap endingTimeStripBitmap;
+
+    Sprite remainingTimeStrip;
+    Sprite endingTimeStrip;
+
     double remainingPercent;
-    int oneHundredPercentPoz;
-    int zeroPercentPoz;
-    int remainingTime;
+
+    double remainingTimeStripX;
+    double remainingTimeStripY;
+
+    double endingTimeStripX;
+    double endingTimeStripY;
+
+    int timeStripsW;
+    int timeStripsH;
+
+    double oneHundredPercentPoz;
+    double zeroPercentPoz;
+
+    int remainingTimeNum;
     int startTime;
 
     int width;
     int height;
 
-    public GameTimer(Context context, int startTime, int width, int height) {
-        this.startTime = startTime;
-        this.width = width;
-        this.height = height;
+    public void  prepare () {
+        Rect timeStripsInitialFrame = new Rect(0, 0, timeStripsW, timeStripsH);
 
-        remainingTime = this.startTime;
-        remainingPercent = 100;
-
-        remainingTimeBitmap = BitmapFactory.decodeResource(
-                context.getResources(),
-                R.drawable.remaining_time);
-
-
-        remainingTimeBitmap = Bitmap.createScaledBitmap(remainingTimeBitmap, (int) (width * 0.786), (int) (height * 0.047), false);
-
-        endingTimeBitmap = BitmapFactory.decodeResource(
-                context.getResources(),
-                R.drawable.ending_time);
-
-        endingTimeBitmap = Bitmap.createScaledBitmap(endingTimeBitmap, (int) (width * 0.786), (int) (height * 0.047), false);
-
-        oneHundredPercentPoz = (int) (width * 0.893);
-        zeroPercentPoz = (int) (width * 0.122);
+        remainingTimeStrip = new Sprite(remainingTimeStripX, remainingTimeStripY, 0, 0, timeStripsInitialFrame, remainingTimeStripBitmap );
+        endingTimeStrip = new Sprite(endingTimeStripX, endingTimeStripY, 0, 0, timeStripsInitialFrame, endingTimeStripBitmap);
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(remainingTimeBitmap, (int)(width * 0.122), (int) (height*0.039), mPaint);
-        canvas.drawBitmap(endingTimeBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (height*0.039), mPaint);
+        canvas.drawBitmap(remainingTimeStripBitmap, (int)(width * 0.122), (int) (height*0.039), mPaint);
+        canvas.drawBitmap(endingTimeStripBitmap, (int)((oneHundredPercentPoz - zeroPercentPoz) / (100/remainingPercent)), (int) (height*0.039), mPaint);
     }
 
-    public void update(int remainingTime) {
-        this.remainingTime = remainingTime;
-        remainingPercent = this.remainingTime*100/startTime;
+    public void update(int ms, int remainingTime) {
+        this.remainingTimeNum = remainingTime;
+        remainingPercent = this.remainingTimeNum*100/startTime;
+
+        remainingTimeStrip.update(ms);
+        endingTimeStrip.update(ms);
     }
 
-    public void gradeDecrease() {
-    }
 }
