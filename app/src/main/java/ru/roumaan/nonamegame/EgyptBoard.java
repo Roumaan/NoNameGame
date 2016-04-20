@@ -116,7 +116,7 @@ public class EgyptBoard extends Board {
                 R.drawable.pressed_plate);
         pressedPlateBitmap = Bitmap.createScaledBitmap(pressedPlateBitmap, plateW, plateH, false);
 
-        String[] names = context.getResources().getStringArray(R.array.standart_symbols);
+        String[] names = context.getResources().getStringArray(R.array.egypt_symbols);
         symbolsBitmaps = new Bitmap[names.length];
 
         for (int i = 0; i < names.length; i++) {

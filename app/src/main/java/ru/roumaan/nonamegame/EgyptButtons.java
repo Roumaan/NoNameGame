@@ -47,7 +47,7 @@ public class EgyptButtons extends  Buttons {
         button4Y = (int) (height * 0.8);
 
 
-        String[] names = context.getResources().getStringArray(R.array.standart_symbols);
+        String[] names = context.getResources().getStringArray(R.array.egypt_symbols);
         symbolsBitmaps = new Bitmap[names.length];
 
         for (int i = 0; i < names.length; i++) {

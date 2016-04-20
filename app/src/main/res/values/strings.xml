@@ -12,4 +12,17 @@
         <item>standart_symbol9</item>
         <item>standart_symbol10</item>
     </string-array>
+
+    <string-array name="egypt_symbols">
+        <item>egypt_symbol1</item>
+        <item>egypt_symbol2</item>
+        <item>egypt_symbol3</item>
+        <item>egypt_symbol4</item>
+        <item>egypt_symbol5</item>
+        <item>egypt_symbol6</item>
+        <item>egypt_symbol7</item>
+        <item>egypt_symbol8</item>
+        <item>egypt_symbol9</item>
+        <item>egypt_symbol10</item>
+    </string-array>
 </resources>
