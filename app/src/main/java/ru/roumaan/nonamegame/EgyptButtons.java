@@ -7,9 +7,9 @@ import android.graphics.BitmapFactory;
 
 public class EgyptButtons extends  Buttons {
 
-    Bitmap GoldGradeButtonsBitmap;
-    Bitmap SilverGradeButtonsBitmap;
-    Bitmap BronzeGradeButtonsBitmap;
+    Bitmap secondButtonBitmap;
+    Bitmap thirdButtonBitmap;
+    Bitmap fourthButtonBitmap;
 
     public EgyptButtons(Context context, int width, int height) {
         this.context = context;
@@ -17,22 +17,27 @@ public class EgyptButtons extends  Buttons {
         button_width = (int) (width*0.20);
         button_height = button_width;
 
-        GoldGradeButtonsBitmap = BitmapFactory.decodeResource(
+        buttonsBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_button);
-        GoldGradeButtonsBitmap = Bitmap.createScaledBitmap(GoldGradeButtonsBitmap, button_width, button_height, false);
+                R.drawable.egypt_button1);
+        buttonsBitmap = Bitmap.createScaledBitmap(buttonsBitmap, button_width, button_height, false);
 
-        SilverGradeButtonsBitmap = BitmapFactory.decodeResource(
+        secondButtonBitmap= BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_button);
-        SilverGradeButtonsBitmap = Bitmap.createScaledBitmap(SilverGradeButtonsBitmap, button_width, button_height, false);
+                R.drawable.egypt_button2);
+        secondButtonBitmap = Bitmap.createScaledBitmap(secondButtonBitmap, button_width, button_height, false);
 
-        BronzeGradeButtonsBitmap = BitmapFactory.decodeResource(
+        thirdButtonBitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.standart_button);
-        BronzeGradeButtonsBitmap = Bitmap.createScaledBitmap(BronzeGradeButtonsBitmap, button_width, button_height, false);
+                R.drawable.egypt_button3);
+        thirdButtonBitmap = Bitmap.createScaledBitmap(thirdButtonBitmap, button_width, button_height, false);
 
-        buttonsBitmap = GoldGradeButtonsBitmap;
+        fourthButtonBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.egypt_button4);
+        fourthButtonBitmap = Bitmap.createScaledBitmap(fourthButtonBitmap, button_width, button_height, false);
+
+
 
         button1X = (int) (width * 0.04);
         button1Y = (int) (height * 0.8);
@@ -63,18 +68,17 @@ public class EgyptButtons extends  Buttons {
         prepare();
     }
 
+    @Override
+    void prepare() {
+        button1 = new Button(buttonsBitmap, symbolsBitmaps, button1X, button1Y, button1VX, button1VY);
+        button2 = new Button(secondButtonBitmap, symbolsBitmaps, button2X, button2Y, button2VX, button2VY);
+        button3 = new Button(thirdButtonBitmap, symbolsBitmaps, button3X, button3Y, button3VX, button3VY);
+        button4 = new Button(fourthButtonBitmap, symbolsBitmaps, button4X, button4Y, button4VX, button4VY);
+
+    }
+
     public void setGrade(int grade) {
-        switch (grade) {
-            case 3:
-                buttonsBitmap = GoldGradeButtonsBitmap;
-                break;
-            case 2:
-                buttonsBitmap = SilverGradeButtonsBitmap;
-                break;
-            case 1:
-                buttonsBitmap = BronzeGradeButtonsBitmap;
-                break;
-        }
-        button1.setButtonBitmap(buttonsBitmap);
+        // some code ...
+        // in future
     }
 }
