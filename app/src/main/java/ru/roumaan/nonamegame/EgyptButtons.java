@@ -4,12 +4,18 @@ package ru.roumaan.nonamegame;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class EgyptButtons extends  Buttons {
 
     Bitmap secondButtonBitmap;
     Bitmap thirdButtonBitmap;
     Bitmap fourthButtonBitmap;
+
+    Bitmap firstButtonPressedBitmap;
+    Bitmap secondButtonPressedBitmap;
+    Bitmap thirdButtonPressedBitmap;
+    Bitmap fourthButtonPressedBitmap;
 
     public EgyptButtons(Context context, int width, int height) {
         this.context = context;
@@ -36,6 +42,26 @@ public class EgyptButtons extends  Buttons {
                 context.getResources(),
                 R.drawable.egypt_button4);
         fourthButtonBitmap = Bitmap.createScaledBitmap(fourthButtonBitmap, button_width, button_height, false);
+
+        firstButtonPressedBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.egypt_button1_pressed);
+        firstButtonPressedBitmap = Bitmap.createScaledBitmap(firstButtonPressedBitmap, button_width, button_height, false);
+
+        secondButtonPressedBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.egypt_button2_pressed);
+        secondButtonPressedBitmap = Bitmap.createScaledBitmap(secondButtonPressedBitmap, button_width, button_height, false);
+
+        thirdButtonPressedBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.egypt_button3_pressed);
+        thirdButtonPressedBitmap = Bitmap.createScaledBitmap(thirdButtonPressedBitmap, button_width, button_height, false);
+
+        fourthButtonPressedBitmap = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.egypt_button4_pressed);
+        fourthButtonPressedBitmap = Bitmap.createScaledBitmap(fourthButtonPressedBitmap, button_width, button_height, false);
 
 
 
@@ -80,5 +106,32 @@ public class EgyptButtons extends  Buttons {
     public void setGrade(int grade) {
         // some code ...
         // in future
+    }
+
+    @Override
+    boolean tap(float x, float y) {
+        boolean res = super.tap(x, y);
+
+        if (button1.isTouched(x, y)) {
+            button1.setButtonBitmap(firstButtonPressedBitmap);
+            Log.i("bab", "tap");
+        } else if (button2.isTouched(x, y)) {
+            button2.setButtonBitmap(secondButtonPressedBitmap);
+        } else if (button3.isTouched(x, y)) {
+            button3.setButtonBitmap(thirdButtonPressedBitmap);
+        } else if (button4.isTouched(x, y)) {
+            button4.setButtonBitmap(fourthButtonPressedBitmap);
+        }
+
+
+        return res;
+    }
+
+    void release() {
+        Log.i("bab", "release");
+        button1.setButtonBitmap(buttonsBitmap);
+        button2.setButtonBitmap(secondButtonBitmap);
+        button3.setButtonBitmap(thirdButtonBitmap);
+        button4.setButtonBitmap(fourthButtonBitmap);
     }
 }
