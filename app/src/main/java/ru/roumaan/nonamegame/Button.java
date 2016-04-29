@@ -4,6 +4,7 @@ package ru.roumaan.nonamegame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Button {
     private Sprite button;
@@ -102,6 +103,7 @@ public class Button {
     }
 
     public void setButtonBitmap(Bitmap buttonBitmap) {
+        Log.i("bab", "Button");
         button.setBitmap(buttonBitmap);
     }
 
