@@ -84,11 +84,11 @@ public class StandardCampaignPlayer extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        // Если это нажатие и по кнопке то...
-        if (event.getAction() == MotionEvent.ACTION_DOWN&& buttons.touchCheck(event.getX(), event.getY())) {
+        // Если это нажатие то...
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
             // Если кнопка правильная то...
-            if (buttons.isTapRight(event.getX(), event.getY())) {
+            if (buttons.tap(event.getX(), event.getY())) {
 
                 remainingTime += 500;// Восполнить время на 500 мс
 
@@ -103,6 +103,10 @@ public class StandardCampaignPlayer extends View {
             }
 
 
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            buttons.release();
         }
         return true;
     }

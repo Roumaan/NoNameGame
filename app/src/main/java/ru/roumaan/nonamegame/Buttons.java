@@ -140,26 +140,28 @@ abstract public class Buttons {
 
     }
 
-    boolean touchCheck(float x, float y) {
+    boolean isButtonsTapped(float x, float y) {
         return button1.isTouched(x, y) || button2.isTouched(x, y) || button3.isTouched(x, y) || button4.isTouched(x, y);
     }
 
-    boolean isTapRight(float x, float y) {
+    boolean tap(float x, float y) {
         boolean res = false;
 
-        switch (true_button) {
-            case 0:
-                res = button1.isTouched(x, y);
-                break;
-            case 1:
-                res = button2.isTouched(x, y);
-                break;
-            case 2:
-                res = button3.isTouched(x, y);
-                break;
-            case 3:
-                res = button4.isTouched(x, y);
-                break;
+        if (isButtonsTapped(x, y)) {
+            switch (true_button) {
+                case 0:
+                    res = button1.isTouched(x, y);
+                    break;
+                case 1:
+                    res = button2.isTouched(x, y);
+                    break;
+                case 2:
+                    res = button3.isTouched(x, y);
+                    break;
+                case 3:
+                    res = button4.isTouched(x, y);
+                    break;
+            }
         }
 
         return res;
