@@ -3,7 +3,9 @@ package ru.roumaan.nonamegame;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.view.MotionEvent;
@@ -12,14 +14,18 @@ import android.view.SurfaceView;
 
 public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
 
-    private Context context; // Context нужен для получения размера экрана на 58
     private DrawThread drawThread;
 
+    Context context;
+
+    Sprite background;
     Sprite logo;
     Sprite chooseCampaignButton;
     Sprite endlessModeButton;
     Sprite tORButton;
     Sprite aboutButton;
+
+    Bitmap backgroundBitmap;
 
     Bitmap logoBitmap;
 
@@ -29,6 +35,10 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
     int buttonsW;
     int buttonsH;
 
+    int buttonsGap;
+
+    double buttonsX;
+
     boolean firstUpdate;
 
     // Конструктор
@@ -36,7 +46,6 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
         super(context);
 
         firstUpdate = true;
-
         this.context = context;
 
         getHolder().addCallback(this);
@@ -45,6 +54,8 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
 
     // Обновление
     private void update(int ms) {
+
+        background.update(ms);
 
         logo.update(ms);
         chooseCampaignButton.update(ms);
@@ -65,24 +76,28 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
                     (event.getY() > chooseCampaignButton.getY() &&
                             event.getY() < chooseCampaignButton.getY() + chooseCampaignButton.getFrameHeight())) {
 
+                chooseCampaignButton.setBitmap(pressedButton);
             } else if ((event.getX() > endlessModeButton.getX() &&
                     event.getX() < endlessModeButton.getX() + endlessModeButton.getFrameWidth())
                     &&
                     (event.getY() > endlessModeButton.getY() &&
                             event.getY() < endlessModeButton.getY() + endlessModeButton.getFrameHeight())) {
 
+                endlessModeButton.setBitmap(pressedButton);
             } else if ((event.getX() > tORButton.getX() &&
                     event.getX() < tORButton.getX() + tORButton.getFrameWidth())
                     &&
                     (event.getY() > tORButton.getY() &&
                             event.getY() < tORButton.getY() + tORButton.getFrameHeight())) {
 
+                tORButton.setBitmap(pressedButton);
             } else if ((event.getX() > aboutButton.getX() &&
                     event.getX() < aboutButton.getX() + aboutButton.getFrameWidth())
                     &&
                     (event.getY() > aboutButton.getY() &&
                             event.getY() < aboutButton.getY() + aboutButton.getFrameHeight())) {
 
+                aboutButton.setBitmap(pressedButton);
             }
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -124,7 +139,6 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
-
     public class DrawThread extends Thread {
         private SurfaceHolder surfaceHolder;
         private volatile boolean running = true;//флаг для остановки потока
@@ -140,53 +154,148 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
         @Override
         public void run() {
             while (running) {
+
+                Canvas canvas = surfaceHolder.lockCanvas();
+
                 if (firstUpdate) {
 
-                    Rect logoInitialFrame = new Rect(0, 0, 0, 0);
-                    logo = new Sprite(0, 0,
+                     backgroundBitmap = BitmapFactory.decodeResource(
+                             context.getResources(),
+                             R.drawable.background_full);
+                     backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, canvas.getWidth(), canvas.getHeight(), false);
+
+                     Rect backgroundInitialFrame = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+                     background = new Sprite(0, 0, 0, 0, backgroundInitialFrame, backgroundBitmap);
+
+                     logoBitmap = BitmapFactory.decodeResource(
+                             context.getResources(),
+                             R.drawable.logo);
+                     logoBitmap = Bitmap.createScaledBitmap(logoBitmap, (int) (canvas.getWidth()*0.848), (int) (canvas.getHeight()*0.121), false);
+
+                     Rect logoInitialFrame = new Rect(0, 0, logoBitmap.getWidth(), logoBitmap.getHeight());
+                     logo = new Sprite((canvas.getWidth()-logoBitmap.getWidth())/2, canvas.getHeight()*0.111,
                             0, 0,
                             logoInitialFrame,
                             logoBitmap);
 
-                    buttonsW = 0;
-                    buttonsH = 0;
+                     buttonsW = (int) (canvas.getWidth()*0.5354);
+                     buttonsH = (int) (canvas.getHeight()*0.069);
 
-                    Rect buttonsInitialFrame = new Rect(0, 0, buttonsW, buttonsH);
+                     buttonsX = (canvas.getWidth()-buttonsW)/2;
+                     buttonsGap = (int) (canvas.getHeight()*0.018);
 
-                    chooseCampaignButton = new Sprite(0, 0,
+                     button = BitmapFactory.decodeResource(
+                             context.getResources(),
+                             R.drawable.main_menu_button);
+                     button = Bitmap.createScaledBitmap(button, buttonsW, buttonsH, false);
+
+                     pressedButton = BitmapFactory.decodeResource(
+                             context.getResources(),
+                             R.drawable.main_menu_button_pressed);
+                     pressedButton = Bitmap.createScaledBitmap(pressedButton, buttonsW, buttonsH, false);
+
+                     Rect buttonsInitialFrame = new Rect(0, 0, buttonsW, buttonsH);
+
+                     chooseCampaignButton = new Sprite(buttonsX, (canvas.getHeight()-buttonsGap*3-buttonsH*4)/2,
                             0, 0,
                             buttonsInitialFrame,
                             button);
 
-                    endlessModeButton = new Sprite(0, 0,
+                     endlessModeButton = new Sprite(buttonsX, chooseCampaignButton.getY()+buttonsH+buttonsGap,
                             0, 0,
                             buttonsInitialFrame,
                             button);
 
-                    tORButton = new Sprite(0, 0,
+                     tORButton = new Sprite(buttonsX, endlessModeButton.getY()+buttonsH+buttonsGap,
+                            0, 0,
+                            buttonsInitialFrame,
+                             button);
+
+                     aboutButton = new Sprite(buttonsX, tORButton.getY()+buttonsH+buttonsGap,
                             0, 0,
                             buttonsInitialFrame,
                             button);
 
-                    aboutButton = new Sprite(0, 0,
-                            0, 0,
-                            buttonsInitialFrame,
-                            button);
-
+                     firstUpdate = false;
                 }
 
-                Canvas canvas = surfaceHolder.lockCanvas();
                 if (canvas != null && !firstUpdate) {
                     try {
+
+                        background.draw(canvas);
+
                         logo.draw(canvas);
                         chooseCampaignButton.draw(canvas);
                         endlessModeButton.draw(canvas);
                         tORButton.draw(canvas);
                         aboutButton.draw(canvas);
+
+                        Paint paint = new Paint();
+                        paint.setTextSize(buttonsH / 2);
+
+
+
+                        String text = context.getText(R.string.ChooseCampaignText).toString();
+
+                        float[] widthsOfChars = new float[text.length()];
+                        paint.getTextWidths(text, widthsOfChars);
+                        float widthOfText = 0;
+
+                        for (float widthOfChar :
+                                widthsOfChars) {
+                            widthOfText+=widthOfChar;
+                        }
+
+                        canvas.drawText(text, (float) (chooseCampaignButton.getX() + (buttonsW-widthOfText)/2),
+                                (float) (chooseCampaignButton.getY() + buttonsH/2 + buttonsH*0.15), paint);
+
+                        text = context.getText(R.string.EndlessModeText).toString();
+
+                        widthsOfChars = new float[text.length()];
+                        paint.getTextWidths(text, widthsOfChars);
+                        widthOfText = 0;
+
+                        for (float widthOfChar :
+                                widthsOfChars) {
+                            widthOfText+=widthOfChar;
+                        }
+
+                        canvas.drawText(text, (float) (endlessModeButton.getX() + (buttonsW-widthOfText)/2),
+                                (float) (endlessModeButton.getY() + buttonsH/2 + buttonsH*0.15), paint);
+
+                        text = context.getText(R.string.TableOfRecordsText).toString();
+
+                        widthsOfChars = new float[text.length()];
+                        paint.getTextWidths(text, widthsOfChars);
+                        widthOfText = 0;
+
+                        for (float widthOfChar :
+                                widthsOfChars) {
+                            widthOfText+=widthOfChar;
+                        }
+
+                        canvas.drawText(text, (float) (tORButton.getX() + (buttonsW-widthOfText)/2),
+                                (float) (tORButton.getY() + buttonsH/2 + buttonsH*0.15), paint);
+
+                        text = context.getText(R.string.AboutText).toString();
+
+                        widthsOfChars = new float[text.length()];
+                        paint.getTextWidths(text, widthsOfChars);
+                        widthOfText = 0;
+
+                        for (float widthOfChar :
+                                widthsOfChars) {
+                            widthOfText+=widthOfChar;
+                        }
+
+                        canvas.drawText(text, (float) (aboutButton.getX() + (buttonsW-widthOfText)/2),
+                                (float) (aboutButton.getY() + buttonsH/2 + buttonsH*0.15), paint);
+
                     } finally {
                         surfaceHolder.unlockCanvasAndPost(canvas);
                     }
                 }
+
             }
 
 

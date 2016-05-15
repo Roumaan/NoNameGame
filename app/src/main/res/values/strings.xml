@@ -25,4 +25,9 @@
         <item>egypt_symbol9</item>
         <item>egypt_symbol10</item>
     </string-array>
+
+    <string name="ChooseCampaignText">Choose campaign</string>
+    <string name="EndlessModeText">Endless mode</string>
+    <string name="TableOfRecordsText">Table of records</string>
+    <string name="AboutText">About</string>
 </resources>
