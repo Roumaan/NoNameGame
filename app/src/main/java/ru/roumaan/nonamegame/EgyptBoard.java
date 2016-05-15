@@ -45,10 +45,11 @@ public class EgyptBoard extends Board {
     Sprite[] platesBelow;
     int[] symbolsBelowIds;
 
+    boolean isStopped;
 
     int symbolGap;
 
-    public EgyptBoard(Context context, int width, int height, int symbols, int speed) {
+    public EgyptBoard(Context context, int width, int height, int symbols, int speed, Bitmap endOfBoard) {
 
         heightOfCanvas = height;
         widthOfCanvas = width;
@@ -59,27 +60,27 @@ public class EgyptBoard extends Board {
         boardX = (width - boardW)/2+10;
         boardY = height+10;
 
-        symbolGap = (int)(height*0.0714);
+        symbolGap = (int)(boardH*0.014);
 
         symbolW = (int) (boardW*0.231);
-        symbolH = (int) (boardH*0.0387);
+        symbolH = (int) (boardH*0.047);
 
         symbolX = boardX+(boardW-symbolW)/2;
-        symbolY = boardY + boardH * 0.06 + symbolGap/2;
+        symbolY = boardY + boardH * 0.044 + symbolGap/2;
 
         plateW = (int) (boardW*0.3098);
-        plateH = (int) (boardH*0.048);
+        plateH = (int) (boardH*0.05);
 
         plateX = symbolX + (symbolW-plateW)/2;
         plateY = symbolY + (symbolH-plateH)/2;
 
         
         endOfBoardW = boardW+boardW/4;
-        endOfBoardH = (int) (height * 0.146);
+        endOfBoardH = (int) (height + height * 0.2325);
         
         		
         endOfBoardX = boardX - boardW/4/2;
-        endOfBoardY = boardY + boardH * 0.06 + symbolH*symbols + symbolGap*(symbols-1) + symbolGap/2;
+        endOfBoardY = boardY + boardH * 0.044 + symbolH*symbols + symbolGap*(symbols-1) + symbolGap/2;
         
         vX = 0;
         vY = -speed;
@@ -101,9 +102,7 @@ public class EgyptBoard extends Board {
 
         boardBitmap = GoldGradeBoardBitmap;
         
-        EndOfBordBitmap = BitmapFactory.decodeResource(
-                context.getResources(),
-                R.drawable.end_of_egypt_board);
+        EndOfBordBitmap = endOfBoard;
         EndOfBordBitmap = Bitmap.createScaledBitmap(EndOfBordBitmap, endOfBoardW, endOfBoardH, false);
 
         plateBitmap = BitmapFactory.decodeResource(
@@ -200,6 +199,7 @@ public class EgyptBoard extends Board {
     public void update(int ms) {
         super.update(ms);
 
+
         for (int i = 0; i < symbolsHigher.length; i++) {
             if (symbolsHigher[i] != null) {
                 if (symbolsHigher[i].getY() < 0 - symbolH) {
@@ -215,6 +215,7 @@ public class EgyptBoard extends Board {
                 }
             }
         }
+
 
 
         if (endOfBoard.getY() + endOfBoardH <= heightOfCanvas) {
@@ -246,6 +247,8 @@ public class EgyptBoard extends Board {
             }
 
             symbol.setVy(vY);
+
+            isStopped = true;
 
 
         }
@@ -393,5 +396,43 @@ public class EgyptBoard extends Board {
 
     public boolean isBeyond() {
         return symbol.getY() <= -symbolH / 2;
+    }
+
+    public void setVy (double vY) {
+        if (!isStopped) {
+            this.vY = -vY;
+
+
+            board.setVy(this.vY);
+
+            for (Sprite symbol :
+                    symbolsHigher) {
+                if (symbol != null) {
+                    symbol.setVy(this.vY);
+                }
+            }
+
+            for (Sprite plate :
+                    platesHigher) {
+                if (plate != null) {
+                    plate.setVy(this.vY);
+                }
+            }
+
+            this.symbol.setVy(this.vY);
+            plate.setVy(this.vY);
+
+            for (Sprite symbol :
+                    symbolsBelow) {
+                symbol.setVy(this.vY);
+            }
+
+            for (Sprite plate :
+                    platesBelow) {
+                plate.setVy(this.vY);
+            }
+
+            endOfBoard.setVy(this.vY);
+        }
     }
 }

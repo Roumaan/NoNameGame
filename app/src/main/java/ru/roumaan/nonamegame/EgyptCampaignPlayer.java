@@ -2,6 +2,8 @@ package ru.roumaan.nonamegame;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
@@ -85,6 +87,10 @@ public class EgyptCampaignPlayer extends SurfaceView implements SurfaceHolder.Ca
         buttons.update(ms);
         board.update(ms);
         timer.update(remainingTime);
+
+        speed *= speedMultiplier;
+
+        board.setVy(speed);
     }
 
     // Этот метод вызывается при касании экрана
@@ -193,7 +199,11 @@ public class EgyptCampaignPlayer extends SurfaceView implements SurfaceHolder.Ca
                     timer = new GameTimer(context, remainingTime, getWidth(), getHeight());
                     background = new EgyptBackground(context, getWidth(), getHeight() /*, symbols, speed*/);
                     buttons = new EgyptButtons(context, getWidth(), getHeight());
-                    board = new EgyptBoard(context, getWidth(), getHeight(), symbols, speed);
+
+                    Bitmap endOfBoard = BitmapFactory.decodeResource(
+                            context.getResources(),
+                            R.drawable.end_of_egypt_board1);
+                    board = new EgyptBoard(context, getWidth(), getHeight(), symbols, speed, endOfBoard);
 
                     buttons.next(board.next()); // Следующий символ
 
