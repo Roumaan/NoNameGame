@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NoNameGame</string>
+    <string name="TableOfRecordsText">Таблица рекордов</string>
+    <string name="ResultText">Результат:</string>
+    <string name="RecordText">Рекорд:</string>
+    <string name="EndlessModeText">Бесконечный режим</string>
+    <string name="ChooseCampaignText">Выбрать кампанию</string>
+    <string name="AboutText">Об игре</string>
+    <string name="EgyptText">Египет</string>
+</resources>

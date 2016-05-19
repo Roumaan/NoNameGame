@@ -30,4 +30,9 @@
     <string name="EndlessModeText">Endless mode</string>
     <string name="TableOfRecordsText">Table of records</string>
     <string name="AboutText">About</string>
+
+    <string name="RecordText">Record:</string>
+    <string name="ResultText">Score:</string>
+
+    <string name="EgyptText">Egypt</string>
 </resources>

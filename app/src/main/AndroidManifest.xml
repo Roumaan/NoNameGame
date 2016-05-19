@@ -20,6 +20,22 @@
 
 
         </activity>
+
+        <activity android:name=".ArcadeGameActivity" android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".StandartCampaignGameOverActivity" android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".AboutActivity" android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".ChooseCampaignActivity" android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

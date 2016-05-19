@@ -2,6 +2,7 @@ package ru.roumaan.nonamegame;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
     private DrawThread drawThread;
 
     Context context;
+    MainActivity mainActivity;
 
     Sprite background;
     Sprite logo;
@@ -42,11 +44,12 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
     boolean firstUpdate;
 
     // Конструктор
-    public MainMenu(Context context) {
+    public MainMenu(Context context, MainActivity mainActivity) {
         super(context);
 
         firstUpdate = true;
         this.context = context;
+        this.mainActivity = mainActivity;
 
         getHolder().addCallback(this);
     }
@@ -100,12 +103,54 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
                 aboutButton.setBitmap(pressedButton);
             }
         }
+
         if (event.getAction() == MotionEvent.ACTION_UP) {
+            if ((event.getX() > chooseCampaignButton.getX() &&
+                    event.getX() < chooseCampaignButton.getX() + chooseCampaignButton.getFrameWidth())
+                    &&
+                    (event.getY() > chooseCampaignButton.getY() &&
+                            event.getY() < chooseCampaignButton.getY() + chooseCampaignButton.getFrameHeight())) {
+
+                ChooseCampaignActivity activity = new ChooseCampaignActivity();
+                Intent intent = new Intent(context, activity.getClass());
+                context.startActivity(intent);
+                mainActivity.finish();
+
+            } else if ((event.getX() > endlessModeButton.getX() &&
+                    event.getX() < endlessModeButton.getX() + endlessModeButton.getFrameWidth())
+                    &&
+                    (event.getY() > endlessModeButton.getY() &&
+                            event.getY() < endlessModeButton.getY() + endlessModeButton.getFrameHeight())) {
+
+                ArcadeGameActivity activity = new ArcadeGameActivity();
+                Intent intent = new Intent(context, activity.getClass());
+                context.startActivity(intent);
+                mainActivity.finish();
+            } else if ((event.getX() > tORButton.getX() &&
+                    event.getX() < tORButton.getX() + tORButton.getFrameWidth())
+                    &&
+                    (event.getY() > tORButton.getY() &&
+                            event.getY() < tORButton.getY() + tORButton.getFrameHeight())) {
+
+
+            } else if ((event.getX() > aboutButton.getX() &&
+                    event.getX() < aboutButton.getX() + aboutButton.getFrameWidth())
+                    &&
+                    (event.getY() > aboutButton.getY() &&
+                            event.getY() < aboutButton.getY() + aboutButton.getFrameHeight())) {
+
+                AboutActivity activity = new AboutActivity();
+                Intent intent = new Intent(context, activity.getClass());
+                context.startActivity(intent);
+                mainActivity.finish();
+            }
+
             chooseCampaignButton.setBitmap(button);
             endlessModeButton.setBitmap(button);
             tORButton.setBitmap(button);
             aboutButton.setBitmap(button);
         }
+
 
         return true;
     }
@@ -313,7 +358,7 @@ public class MainMenu extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void onTick(long millisUntilFinished) {
-            if (getWidth() != 0 && getHeight() != 0 && !firstUpdate) {
+            if (!firstUpdate) {
 
                 update(50); // Обновление
 

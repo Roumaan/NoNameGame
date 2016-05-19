@@ -1,15 +1,15 @@
 package ru.roumaan.nonamegame;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+public class ArcadeGameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new MainMenu(this, this));
+        setContentView(new StandardCampaignPlayer(this, this, 25000));
     }
-
 
 }

@@ -1,6 +1,7 @@
 package ru.roumaan.nonamegame;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
@@ -18,25 +19,30 @@ public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder
     private GameTimer timer; // Полоска времени
     private Context context; // Context нужен для получения размера экрана на 58
 
+    Timer t;
+    ArcadeGameActivity activity;
 
-    private int startTime; // Стартовое время
+
     private int remainingTime; // Оставшееся время
+    private int bonusTime;
     private int score; // Колличество очков
 
     private DrawThread drawThread;
 
     boolean firstUpdate;
+    boolean gameOver;
 
     // Конструктор
-    public StandardCampaignPlayer(Context context, int remainingTime) {
+    public StandardCampaignPlayer(Context context, ArcadeGameActivity activity, int remainingTime) {
         super(context);
 
         firstUpdate = true;
 
         this.context = context;
+        this.activity = activity;
 
         this.remainingTime = remainingTime;
-        startTime = remainingTime;
+        bonusTime = 750;
 
         getHolder().addCallback(this);
     }
@@ -45,9 +51,12 @@ public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder
     // Обновление
     private void update(int ms) {
 
-        if (remainingTime <= 0) {
+        if (remainingTime-ms <= 0 && !gameOver) {
+            gameOver = true;
             gameOver();
+
         }
+
         remainingTime -= ms; // Уменьшение оставшегося времени
 
         // Обновление всех эллементов
@@ -68,7 +77,9 @@ public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder
             // Если кнопка правильная то...
             if (buttons.tap(event.getX(), event.getY())) {
 
-                remainingTime += 500;// Восполнить время на 500 мс
+                remainingTime += bonusTime;// Восполнить время на 500 мс
+
+                bonusTime -= 0.75*score;
 
                 // Перейти к другому символу
                 int id = board.next();
@@ -91,8 +102,11 @@ public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder
 
     // Проигрыш
     private void gameOver() {
-        remainingTime = startTime;// Возвращение полоски времени к начальному состоянию
-        score = 0;
+
+        StandartCampaignGameOverActivity gameOverActivity = new StandartCampaignGameOverActivity();
+        Intent intent = new Intent(context, gameOverActivity.getClass());
+        intent.putExtra("score", score);
+        context.startActivity(intent);
     }
 
     @Override
@@ -100,7 +114,7 @@ public class StandardCampaignPlayer extends SurfaceView implements SurfaceHolder
         drawThread = new DrawThread(getHolder());
         drawThread.start();
 
-        Timer t = new Timer();
+        t = new Timer();
         t.start();
     }
 
