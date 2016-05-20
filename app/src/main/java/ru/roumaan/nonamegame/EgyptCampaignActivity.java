@@ -16,14 +16,19 @@ public class EgyptCampaignActivity extends AppCompatActivity {
     public EgyptCampaignActivity(int time, int silverGrade, int bronzeGrade, int speed, double speedMultiplier, int symbols) {
         super();
 
-        this.
+        this.time = time;
+        this.silverGrade = silverGrade;
+        this.bronzeGrade = bronzeGrade;
+        this.speed = speed;
+        this.speedMultiplier = speedMultiplier;
+        this.symbols = symbols;
 
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new EgyptCampaignPlayer(this, 25000, 20000, 5000, 1.1));
+        setContentView(new EgyptCampaignPlayer(this, time, silverGrade, bronzeGrade, speed, speedMultiplier, symbols));
     }
 
 }

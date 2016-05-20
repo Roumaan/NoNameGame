@@ -2,4 +2,30 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Egypt balance settings -->
+
+    <integer-array name="times">
+
+    </integer-array>
+
+    <integer-array name="silver_grades">
+
+    </integer-array>
+
+    <integer-array name="bronze_grades">
+
+    </integer-array>
+
+    <integer-array name="speeds">
+
+    </integer-array>
+
+    <integer-array name="speed_multipliers">
+
+    </integer-array>
+
+    <integer-array name="symbols_count">
+
+    </integer-array>
 </resources>
